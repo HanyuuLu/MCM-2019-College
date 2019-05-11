@@ -10,14 +10,13 @@ res = Res(NO,NUM)
 output = 0
 clockSum  = 0
 def goAlong():
-    pass
+    while clockSum< 8*3600:
+        for i in range(8):
+            snap()
+            goto(machineList[i])
 def initialGoAlong():
     for i in range(8):
         goto(machineList[i])
-    # for test
-    for i in range(80):
-        for i in range(8):
-            goto(machineList[i])
 def goto(cnc: CNC):
     assert cnc is not None
     global clockSum
@@ -33,7 +32,21 @@ def goto(cnc: CNC):
     else:
         pass
 
-   
+def snap():
+    global clockSum
+    u=""
+    d=""
+    for i in range(8):
+         if i%2==0:
+            u+=str(timeTable[i])+'\t'
+         else:
+            d+=str(timeTable[i])+'\t'
+    print('=================================\n'+u)
+    for i in range(int(rgv.position)):
+        print('\t',end='',sep='')
+    print('[==]')
+    print(d+'\n=================================\n')
+
 def wash():
     global clockSum
     global output
@@ -50,4 +63,5 @@ if __name__ == '__main__':
         timeTable.append(None)
     rgv = RGV()
     initialGoAlong()
+    goAlong()
 
