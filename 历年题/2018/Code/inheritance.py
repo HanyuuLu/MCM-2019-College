@@ -88,7 +88,7 @@ class Item:
         self.alignment = []
         # 指定赋值
         if len(inputList) == 1:
-            assert isi                                                         nstance(inputList[0], list), \
+            assert isinstance(inputList[0], list), \
                 "[Hanyuu]应当使用列表对象初始化个体,输入对象类型为" + str(type(inputList[0]))
             self.alignment = inputList[0]
             assert max(self.alignment) < MACHINE_COUNT and min(self.alignment) >= 0, \
