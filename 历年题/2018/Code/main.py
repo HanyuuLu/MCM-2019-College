@@ -1,6 +1,7 @@
 from CNC import CNC
 from RGV import RGV
 from Res import Res
+from inheritance import Item
 NO = 0  # 组号[0:2]
 NUM = 1 # 题目号[1:3]
 rgv = None
@@ -9,14 +10,11 @@ timeTable = []
 res = Res(NO,NUM)
 output = 0
 clockSum  = 0
-def goAlong():
-    while clockSum< 8*3600:
-        for i in range(8):
-            snap()
-            goto(machineList[i])
-def initialGoAlong():
-    for i in range(8):
+def goAlong(route:list)->int:
+    for i in route:
         goto(machineList[i])
+        if clockSum > 8 * 3600:
+            return output-1
 def goto(cnc: CNC):
     assert cnc is not None
     global clockSum
@@ -27,7 +25,7 @@ def goto(cnc: CNC):
         timeTable[cnc.id]=clockSum+res.getProcessTime()
     elif clockSum>timeTable[cnc.id]:
         wash()
-        print('cnc %d finished %d th work at clock %d'% (cnc.id,output,clockSum))
+        # print('cnc %d finished %d th work at clock %d'% (cnc.id,output,clockSum))
         timeTable[cnc.id]=clockSum+res.getProcessTime()
     else:
         pass
@@ -62,6 +60,7 @@ if __name__ == '__main__':
         machineList.append(CNC(i))
         timeTable.append(None)
     rgv = RGV()
-    initialGoAlong()
-    goAlong()
+    exp = Item()
+    print(goAlong(exp.alignment))
+
 

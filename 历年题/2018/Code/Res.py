@@ -1,6 +1,5 @@
-from RGV import RGV
+# from RGV import RGV
 from CNC import CNC
-
 
 class Res:
     def __init__(self, no, num):
@@ -23,14 +22,16 @@ class Res:
                 [27, 32]]
         # 距离表
         self.distenceTable = \
-            [[20, 33, 46],
-                [23, 41, 59],
-                [18, 32, 46]]
+            [[0,20, 33, 46],
+                [0,23, 41, 59],
+                [0,18, 32, 46]]
         # 清洗时间表
         self.washTimeTable = \
             [25,
                 30,
                 25]
+        self.timeUpBound = 8 * 3600
+        self.machineNumber = 8
     # 获取加工时间
     def getProcessTime(self, *select):
         if len(select) == 0:
@@ -46,8 +47,11 @@ class Res:
     def getSwapTime(self, cnc: CNC):
         return self.swapTimeTable[self.no][1 - cnc.id % 2]
     # 获取行进时间
-    def getDistenceTime(self, rgv: RGV, cnc: CNC):
-        return self.distenceTable[self.no][abs(rgv.position - cnc.position)]
+    # def getDistenceTime(self, rgv: RGV, cnc: CNC):
+    #     return self.distenceTable[self.no][abs(rgv.position - cnc.position)]
+    # 通过距离获取行进时间
+    def getDistenceTime(self, num: int) -> int:
+        return self.distenceTable[self.no][num]
     # 获取清洗时间
     def getWashTime(self):
         return self.washTimeTable[self.no]
