@@ -44,8 +44,8 @@ class Res:
         else:
             raise Exception('参数过多')
     # 获取装卸/货时间
-    def getSwapTime(self, cnc: CNC):
-        return self.swapTimeTable[self.no][1 - cnc.id % 2]
+    def getSwapTime(self, cncID:int):
+        return self.swapTimeTable[self.no][1 - cncID % 2]
     # 获取行进时间
     # def getDistenceTime(self, rgv: RGV, cnc: CNC):
     #     return self.distenceTable[self.no][abs(rgv.position - cnc.position)]
@@ -56,9 +56,3 @@ class Res:
     def getWashTime(self):
         return self.washTimeTable[self.no]
 
-
-if __name__ == "__main__":
-    res = Res(0, 2)
-    print(res.getProcessTime(1))
-    cnc = CNC(5)
-    print(res.getSwapTime(cnc))
