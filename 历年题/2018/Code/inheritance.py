@@ -5,8 +5,8 @@ import numpy
 SEED_LENGTH = 10000  # 序列长度
 MACHINE_COUNT = 8  # 机器总数
 UUID = 0
-ORIGIN_SIZE = 10  # 父群个数
-CHILD_SIZE = 3  # 子群个数
+ORIGIN_SIZE = 20  # 父群个数
+CHILD_SIZE = 4  # 子群个数
 
 # 种群
 
@@ -52,7 +52,7 @@ class Group:
         self.childList.append(Item(resA))
         self.childList.append(Item(resB))
     def variation(self, inputList):
-        if randint(0, 10) >0:
+        if randint(0, 10) >8:
             assert len(inputList)==SEED_LENGTH
             a = randint(0, SEED_LENGTH)
             b = randint(0, SEED_LENGTH)
