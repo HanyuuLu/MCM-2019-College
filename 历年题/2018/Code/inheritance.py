@@ -6,7 +6,7 @@ SEED_LENGTH = 10000  # 序列长度
 MACHINE_COUNT = 8  # 机器总数
 UUID = 0
 ORIGIN_SIZE = 10  # 父群个数
-CHILD_SIZE = 2  # 子群个数
+CHILD_SIZE = 3  # 子群个数
 
 # 种群
 
@@ -22,18 +22,20 @@ class Group:
             count+=1
             for _ in range(ORIGIN_SIZE):
                 self.originList.append(Item())
-            for _ in self.originList:
+            for _ in range(int(ORIGIN_SIZE*CHILD_SIZE/2)):
                 self.cross()
             for i in self.childList:
                 rgv = RGV(0,1)
                 i.output = rgv.goAlong(i.alignment)
             self.childList.sort(key=lambda i:i.output[0],reverse = True)
             for i in self.childList:
-                print(i.output[0])
-            print("[count] %d" % count)
+                print(i.output[0], end=' ')
+            print("\n[count] %d" % count)
             print("[best] %d"% self.childList[0].output[0])
             del (self.originList)
             self.originList = self.childList[:ORIGIN_SIZE]
+            for i in self.originList:
+                i.alignment=self.variation(i.alignment)
             del (self.childList)
             self.childList = []
     # 交叉操作
@@ -45,10 +47,12 @@ class Group:
         resB = self.originList[parentsB].alignment[:slice]
         resA.extend(self.originList[parentsA].alignment[slice:])
         resB.extend(self.originList[parentsA].alignment[slice:])
-        self.childList.append(Item(self.variation(resA)))
-        self.childList.append(Item(self.variation(resB)))
+        # self.childList.append(Item(self.variation(resA)))
+        # self.childList.append(Item(self.variation(resB)))
+        self.childList.append(Item(resA))
+        self.childList.append(Item(resB))
     def variation(self, inputList):
-        if randint(0, 10) >8 :
+        if randint(0, 10) >0:
             assert len(inputList)==SEED_LENGTH
             a = randint(0, SEED_LENGTH)
             b = randint(0, SEED_LENGTH)
@@ -84,7 +88,7 @@ class Item:
         self.alignment = []
         # 指定赋值
         if len(inputList) == 1:
-            assert isinstance(inputList[0], list), \
+            assert isi                                                         nstance(inputList[0], list), \
                 "[Hanyuu]应当使用列表对象初始化个体,输入对象类型为" + str(type(inputList[0]))
             self.alignment = inputList[0]
             assert max(self.alignment) < MACHINE_COUNT and min(self.alignment) >= 0, \
@@ -103,11 +107,6 @@ class Item:
         del(self.uuid)
         del (self.alignment)
         gc.collect()
-
-
-
-
-
 
 def test():
     group = Group()

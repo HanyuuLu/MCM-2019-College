@@ -62,5 +62,3 @@ if __name__ == '__main__':
     rgv = RGV()
     exp = Item()
     print(goAlong(exp.alignment))
-
-
