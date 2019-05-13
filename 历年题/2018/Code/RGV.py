@@ -82,17 +82,48 @@ class RGV:
                 except Exception as e:
                     return self.output
 
+# 周期法
 
 count = 0
+upperBound = None            
+# 上界预估函数
+def initialUperBound()->int:
+    rgv = RGV(0,1)
+    for i in range(rgv.res.machineNumber):
+        rgv.goto(i)
+    return max(rgv.clock,min(rgv.timeTable))
+
+def cal(avilableList:list,rgv:RGV)->int:
+    place = []
+    for i in avilableList:
+        place.append(int(i/2))
+    set(place)
+    place.sort()
+    aRgv = copy.deepcopy(rgv)
+    bRgv = copy.deepcopy(rgv)
+    for i in place:
+        aRgv.goto(i)
+    place.reverse()
+    for i in place:
+        bRgv.goto(i)
+    res = min(aRgv,bRgv,key= lambda x:x.clock)
+    for i in avilableList:
+        res.clock+=rgv.res.getSwapTime(i)
+    return res.clock
 def turn(avilableList:list,rgv:RGV)->RGV:
-    global count
+    global count,upperBound
     count +=1
-    print(count,'\t',avilableList)
+    # print(count,'\t',avilableList)
     rgvList = []
     avlList = []
     if len(avilableList) == 0:
         assert isinstance(rgv,RGV)
+        upperBound = min(upperBound,rgv.clock)
         return rgv
+    if cal(avilableList,rgv)>upperBound:
+        nan = copy.deepcopy(rgv)
+        nan.clock = float('inf')
+        return nan
     for i in avilableList:
         temp =copy.deepcopy(avilableList)
         temp.remove(i)
@@ -107,16 +138,18 @@ def turn(avilableList:list,rgv:RGV)->RGV:
         
 # 周期法
 def rurnaround(rgv:RGV):
+    global upperBound 
+    upperBound = initialUperBound()
     avilableList = []
     for i in range(rgv.res.machineNumber):
         avilableList.append(i)
     return turn(avilableList,rgv).clock
-                
 
 
 if __name__=='__main__':
     rgv = RGV(0,1)
     # print(rgv.intelligenceGoAlong())
     print(rurnaround(rgv))
+    # print(initialUperBound())
 
 
