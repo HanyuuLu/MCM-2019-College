@@ -1,94 +1,98 @@
 % !Mode:: "TeX:UTF-8"
 %!TEX program  = xelatex
 
-\documentclass{cumcmthesis}
-%\documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页
+%\documentclass{cumcmthesis}
+\documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页
 
 \usepackage{url}
-\title{全国大学生数学建模竞赛编写的 \LaTeX{} 模板}
+\title{论文标题}
 \tihao{A}
 \baominghao{4321}
-\schoolname{XX大学}
-\membera{小米}
-\memberb{向左}
-\memberc{哈哈}
+\schoolname{东南大学}
+\membera{卢立强}
+\memberb{喻泽弘}
+\memberc{杜昕昱}
 \supervisor{老师}
-\yearinput{2017}
-\monthinput{08}
-\dayinput{22}
+\yearinput{2019}
+\monthinput{05}
+\dayinput{11}
 
 \begin{document}
 
  \maketitle
  \begin{abstract}
-cumcmthesis 是为全国大学生数学建模竞赛编写的\LaTeX{}模板, 旨在让大家专注于 论文的内容写作, 而不用花费过多精力在格式的定制和调整上. 本手册是相应的参考, 其 中提供了一些环境和命令可以让模板的使用更为方便. 同时需要注意, 使用者需要有一 定的 \LaTeX{} 的使用经验, 至少要会使用常用宏包的一些功能, 比如参考文献，数学公式，图片使用，列表环境等等. 例子文件参看 example.pdf.
 
-另外, 欢迎大家购买我们是视频教程，点击\href{https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-3473795048.4.ThFQCG&id=43823508044}{\fbox{这里}}。
+这里是摘要
 
-欢迎大家到QQ群里沟通交流：91940767.
-
-\uwave{关注我们的微信公众号}：
-
-\centerline{\includegraphics[width=5cm]{gongzhonghao}}
-
-\keywords{折叠桌\quad  曲线拟合\quad   非线性优化模型\quad  受力分析}
+\keywords{\quad  曲线拟合\quad   非线性优化模型\quad  受力分析}
 \end{abstract}
 
 %目录
 \tableofcontents
 
-\section{问题重述}
+\section{问题重述与提出}
 
-创意平板折叠桌注重于表达木制品的优雅和设计师所想要强调的自动化与功能性。为了增大有效使用面积。设计师以长方形木板的宽为直径截取了一个圆形作为桌面，又将木板剩余的面积切割成了若干个长短不一的木条，每根木条的长度为平板宽到圆上一点的距离，分别用两根钢筋贯穿两侧的木条，使用者只需提起木板的两侧，便可以在重力的作用下达到自动升起的效果，相互对称的木条宛如下垂的桌布，精密的制作工艺配以质朴的木材，让这件工艺品看起来就像是工业革命时期的机器。
+\subsection{问题的重述}
+
+随着我国科技发展，现代物流观念对个行业发展都产生了重要影响，RGV(有轨穿梭小车)的产生促进了自动化系统和仓库的发展，它可用于各类高密度储存方式的仓库，小车通道可设计任意长，安全性更高，有效地提高效率。RGV小车可以十分方便地与其他物流系统实现自动连接，按照计划进行物料的输送，而其中对于小车的动态调度策略的设计将会影响整个系统的效率。
+
+RGV小车根据指令能自动控制移动方向和距离，并自带一个机械手臂、两只机械手爪和物料清洗槽，能够完成上下料及清洗物料等作业任务，RGV同一时间只能执行移动、停止等待、上下料和清洗作业中的一项。我们的目标就是要设计智能RGV的动态调度策略，使得系统的作业效率最大化。
+
 
 \subsection{问题的提出}
 
-围绕创意平板折叠桌的动态变化过程、设计加工参数，本文依次提出如下问题：
+针对三种情况：
 
-（1）给定长方形平板尺寸 （$120 cm \times 50 cm \times 3 cm$），每根木条宽度（2.5 cm），连接桌腿木条的钢筋的位置，折叠后桌子的高度（53 cm）。要求建立模型描述此折叠桌的动态变化过程，并在此基础上给出此折叠桌的设计加工参数和桌脚边缘线的数学描述。
+（1）一道工序的物料加工作业情况，每台CNC安装同样的刀具，物料可以在任一台CNC上加工完成；
 
-（2）......
+（2）两道工序的物料加工作业情况，每个物料的第一和第二道工序分别由两台不同的CNC依次加工完成；
 
+（3）CNC在加工过程中可能发生故障（据统计：故障的发生概率约为1\%）的情况，每次故障排除（人工处理，未完成的物料报废）时间介于10~20分钟之间，故障排除后即刻加入作业序列。要求分别考虑一道工序和两道工序的物料加工作业情况。
+
+我们完成如下两个任务：
+
+任务1：对一般问题进行研究，给出RGV动态调度模型和相应的求解算法；
+
+任务2：利用表1中系统作业参数的3组数据分别检验模型的实用性和算法的有效性，给出RGV的调度策略和系统的作业效率，并将具体的结果分别填入附件2的EXCEL表中。
+
+\section{问题分析}
+
+\subsection{问题的分析}
+
+\textbf{针对任务一：}
+
+任务一分析
+
+\textbf{针对任务二：}
+
+任务二分析
 
 \section{模型的假设}
 
+
+\subsection{模型的假设}
+
 \begin{itemize}
-\item 忽略实际加工误差对设计的影响；
-\item 木条与圆桌面之间的交接处缝隙较小，可忽略；
-\item 钢筋强度足够大，不弯曲；
-\item 假设地面平整。
+\item 假设一
+\item 假设二
+\item 假设三
+\item 假设四
 \end{itemize}
 
 \section{符号说明}
 \begin{center}
-\begin{tabular}{cc}
- \hline
- \makebox[0.3\textwidth][c]{符号}	&  \makebox[0.4\textwidth][c]{意义} \\ \hline
- D	    & 木条宽度（cm） \\ \hline
- L	    & 木板长度（cm）  \\ \hline
- W	    & 木板宽度（cm）  \\ \hline
- N	    & 第n根木条  \\ \hline
- T	    & 木条根数  \\ \hline
+\begin{table}[!htbp]
+\centering
+\caption{这是一张三线表}\label{tab:aStrangeTable}\centering%添加标题 设置标签
+\begin{tabular}{c|c|c}\hline
+符号& 表示含义& 单位\\\hline
+Steve Jobs& 001& Male\\
+Bill Gates& 002& Female\\\hline
 \end{tabular}
+%\caption{这是一张三线表}\label{tab:aStrangeTable}  标题放在这里也是可以的
+\end{table}
 \end{center}
 
-\section{问题分析}
-
-\subsection{问题一分析}
-题目要求建立模型描述折叠桌的动态变化图，由于在折叠时用力大小的不同，我们不能描述在某一时刻折叠桌的具体形态，但我们可以用每根木条的角度变化来描述折叠桌的动态变化。首先，我们知道折叠桌前后左右对称，我们可以运用几何知识求出四分之一木条的角度变化。最后，根据初始时刻和最终形态两种状态求出桌腿木条开槽的长度。
-
-
-
-
-问题流程图：
-\begin{figure}[!h]
-\centering
-\includegraphics[width=.6\textwidth]{1.png}
-\caption{问题三流程图}
-\end{figure}
-
-\section{绘制普通三线表格}
-表格应具有三线表格式，因此常用 booktabs宏包，其标准格式如表~\ref{tab001}~所示。
 \begin{table}[!htbp]
 \caption{标准三线表格}\label{tab001} \centering
 \begin{tabular}{ccccc}
@@ -102,87 +106,71 @@ $D$(in) & $P_u$(lbs) & $u_u$(in) & $\beta$ & $G_f$(psi.in)\\
 \end{tabular}
 \end{table}
 
-其绘制表格的代码及其说明如下。
-\begin{tcode}
-\begin{table}[!htbp]
-\caption[标签名]{中文标题}
-\begin{tabular}{cc...c}
-\toprule[1.5pt]
-表头第1个格   & 表头第2个格   & ... & 表头第n个格  \\
-\midrule[1pt]
-表中数据(1,1) & 表中数据(1,2) & ... & 表中数据(1,n)\\
-表中数据(2,1) & 表中数据(2,2) & ... & 表中数据(2,n)\\
-...................................................\\
-表中数据(m,1) & 表中数据(m,2) & ... & 表中数据(m,n)\\
-\bottomrule[1.5pt]
-\end{tabular}
-\end{table}
-\end{tcode}
+\section{模型建立与求解}
 
-\bigskip
-table环境是一个将表格嵌入文本的浮动环境。
-tabular环境的必选参数由每列对应一个格式字符所组成：c表示居中，l表示左对齐，r表示右对齐，其总
-个数应与表的列数相同。此外，\verb|@{文本}|可以出现在任意两个上述的列格式之间，其中的文本将被插入每一行
-的同一位置。表格的各行以\verb|\\|分隔，同一行的各列则以\&分隔。
-\verb|\toprule|、\verb|\midrule|和\verb|\bottomrule|三个命令是由booktabs宏包提供的，其
-中\verb|\toprule|和\verb|\bottomrule|分别用来绘制表格的第一条（表格最顶部）和第三条（表格最底部）水平线，
-\verb|\midrule|用来绘制第二条（表头之下）水平线，且第一条和第三条水平线的线宽为1.5pt，第二条水平线的线宽为1pt。
-引用方法：“如表~\verb|\ref{标签名}|~所示”。
+blablabla。。。
 
+插入图片：
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.6\textwidth]{1.png}
+\caption{任务流程图}
+\end{figure}
+\subsection{任务一模型的情况}
+\subsubsection{任务一模型的建立}
+分条列举：
+\begin{itemize}
+\item[(1)] 
+第一条
+\begin{equation}
+X(k)=\sum_{n=0}^{N-1} x(n)e^{-j \frac{2 \pi}{N} k n}=\sum_{n=0}^{N-1} x(n) W_N^{kn},\quad k=0,1,...,N-1.
+\end{equation}
 
+\item[(2)]
+第二条
+\begin{equation}
+X_i=X_{i-1}+x
+\end{equation}
+\item[(3)]
+第三条
+$$ f(x)=\left\{
+\begin{aligned}
+x & = & \cos(t) \\
+y & = & \sin(t) \\
+z & = & \frac xy
+\end{aligned}
+\right.
+$$
+\item[(4)]
+第四条
+\end{itemize}
+\subsubsection{任务一模型的求解}
+这里我们可以插入流程图
+\subsection{任务二模型的情况}
+\subsubsection{任务二模型的建立}
+\subsection{任务二模型的求解}
+
+\section{模型的评价}
+\subsection{模型的优点}
+\subsection{模型的缺点}
+\subsection{模型的改进}
+\subsection{模型的推广与应用}
 %参考文献
 \begin{thebibliography}{9}%宽度9
- \bibitem{bib:one} ....
- \bibitem{bib:two} ....
+ \bibitem{bib:one} 大学物理
+ \bibitem{bib:two} 高等数学
 \end{thebibliography}
 
 \newpage
 %附录
 \begin{appendices}
-\section{排队算法--matlab 源程序}
-\begin{lstlisting}[language=matlab]
-kk=2;[mdd,ndd]=size(dd);
-while ~isempty(V)
-[tmpd,j]=min(W(i,V));tmpj=V(j);
-for k=2:ndd
-[tmp1,jj]=min(dd(1,k)+W(dd(2,k),V));
-tmp2=V(jj);tt(k-1,:)=[tmp1,tmp2,jj];
-end
-tmp=[tmpd,tmpj,j;tt];[tmp3,tmp4]=min(tmp(:,1));
-if tmp3==tmpd, ss(1:2,kk)=[i;tmp(tmp4,2)];
-else,tmp5=find(ss(:,tmp4)~=0);tmp6=length(tmp5);
-if dd(2,tmp4)==ss(tmp6,tmp4)
-ss(1:tmp6+1,kk)=[ss(tmp5,tmp4);tmp(tmp4,2)];
-else, ss(1:3,kk)=[i;dd(2,tmp4);tmp(tmp4,2)];
-end;end
-dd=[dd,[tmp3;tmp(tmp4,2)]];V(tmp(tmp4,3))=[];
-[mdd,ndd]=size(dd);kk=kk+1;
-end; S=ss; D=dd(1,:);
+\section{遗传算法--python 源程序}
+\begin{lstlisting}[language=python]
+print helloworld!
  \end{lstlisting}
- \section{规划解决程序--lingo源代码}
+ \section{程序--X代码}
 \begin{lstlisting}[language=c]
-kk=2;
-[mdd,ndd]=size(dd);
-while ~isempty(V)
-    [tmpd,j]=min(W(i,V));tmpj=V(j);
-for k=2:ndd
-    [tmp1,jj]=min(dd(1,k)+W(dd(2,k),V));
-    tmp2=V(jj);tt(k-1,:)=[tmp1,tmp2,jj];
-end
-    tmp=[tmpd,tmpj,j;tt];[tmp3,tmp4]=min(tmp(:,1));
-if tmp3==tmpd, ss(1:2,kk)=[i;tmp(tmp4,2)];
-else,tmp5=find(ss(:,tmp4)~=0);tmp6=length(tmp5);
-if dd(2,tmp4)==ss(tmp6,tmp4)
-    ss(1:tmp6+1,kk)=[ss(tmp5,tmp4);tmp(tmp4,2)];
-else, ss(1:3,kk)=[i;dd(2,tmp4);tmp(tmp4,2)];
-end;
-end
-    dd=[dd,[tmp3;tmp(tmp4,2)]];V(tmp(tmp4,3))=[];
-    [mdd,ndd]=size(dd);
-    kk=kk+1;
-end;
-S=ss;
-D=dd(1,:);
+cout<<"helloworld";
  \end{lstlisting}
 \end{appendices}
 
