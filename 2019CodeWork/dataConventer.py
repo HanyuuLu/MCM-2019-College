@@ -34,12 +34,11 @@ class Saving(threading.Thread):
             # output.write(res)
         with open(self.name + ".csv", "r") as input:
             reader = csv.reader(input)
-            for line in reader:
-                print(line)
+            print("[info] file %s output finished!" % self.fileName)
 
 
 def dataReader():
-    ROOT = "./data"
+    ROOT = "./data/xls"
     threadingList = []
     for currentDict, subDict, fileName in os.walk(ROOT):
         for i in fileName:
