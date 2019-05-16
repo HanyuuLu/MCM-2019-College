@@ -1,3 +1,5 @@
+git pull
+git push
 git checkout master
 git pull
 git merge dev-Hanyuu

@@ -2,7 +2,9 @@ import os
 import sys
 import csv
 import dateConvert
-DataRoot = './data/csv'
+import dataType
+# DataRoot = './data/csv'
+DataRoot = './expdata/'
 
 def getDataSheet():
     global DataRoot
@@ -20,15 +22,28 @@ def getDataSheet():
                 try:
                     id = int(float(raw[0]))
                 except Exception as e:
-                    print(e)
                     continue
                 if int(id) in res:
-                    res[id].append
-                    ([
-                        dateConvert.getdate(raw[2]),    # 乘车日期
-                        int(raw[3])                     # 支付类型
-                    ])
+                    temp = [dateConvert.getDateTime(raw[2]),    # 乘车日期
+                            str2int(raw[3])  # 支付类型
+                            ]
+                    # print(temp)
+                    res[id].record.append(temp)
+                else:
+                    res[id] = dataType.UserRecord()
+                    res[id].uuid = id
+                    temp = [dateConvert.getDateTime(raw[2]),    # 乘车日期
+                            str2int(raw[3])  # 支付类型
+                            ]
+                    # print(temp)
+                    res[id].record.append(temp)
+    print("[info] data load finished!")
+    return res
 
-
+def str2int(num: str) -> int:
+    try:
+        return int(float(num))
+    except Exception as e:
+        return None
 if __name__ == '__main__':
     getDataSheet()
