@@ -20,7 +20,7 @@ from xlrd import xldate_as_tuple as conv
 
 def getDateTime(date: float) -> datetime.date:
         try:
-                res = conv(float(date),0)
+                res = conv(float(date), 0)
                 return datetime(res[0], res[1], res[2], res[3], res[4], res[5])
         except Exception as e:
                 return None
@@ -29,7 +29,6 @@ def getDateTime(date: float) -> datetime.date:
         # stamp += 3600*24*date
         # # +3600*365*date
         # return datetime.fromtimestamp(stamp)
-
 
         # # global __s_time
         # # intDate = int(date)

@@ -3,8 +3,9 @@ import sys
 import csv
 import dateConvert
 import dataType
-# DataRoot = './data/csv'
-DataRoot = './expdata/'
+DataRoot = './data/csv'
+# DataRoot = './expdata/'
+
 
 def getDataSheet():
     global DataRoot
@@ -40,10 +41,13 @@ def getDataSheet():
     print("[info] data load finished!")
     return res
 
+
 def str2int(num: str) -> int:
     try:
         return int(float(num))
     except Exception as e:
         return None
+
+
 if __name__ == '__main__':
-    getDataSheet()
+    pass
