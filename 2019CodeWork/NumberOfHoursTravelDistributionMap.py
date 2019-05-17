@@ -1,7 +1,11 @@
 import os
+
+
 def drawGraphs():
     pass
-def numberOfHoursDistributionMap(res: dict) -> list:
+
+
+def getData(res: dict) -> list:
     resList = list()
     for i in range(25):
         resList.append(0)
@@ -12,4 +16,3 @@ def numberOfHoursDistributionMap(res: dict) -> list:
             except Exception as e:
                 resList[24] += 1
     return resList
-
