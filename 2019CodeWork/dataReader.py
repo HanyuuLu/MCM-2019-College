@@ -3,8 +3,8 @@ import sys
 import csv
 import dateConvert
 import dataType
-# DataRoot = './data/csv'
-DataRoot = './expdata/'
+DataRoot = './data/csv'
+# DataRoot = './expdata/'
 
 def getDataSheet():
     global DataRoot

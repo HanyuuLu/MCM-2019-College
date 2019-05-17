@@ -9,7 +9,7 @@ a = [1228.3, 3.38, 63.8, 0.07, 0.16, 6.74, 1896.18]  # 数据
 b = [0.12, -12.44, 1.82, 16.67, 6.67, -6.52, 4.04]
 l = [i for i in range(7)]
 
-# plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
+plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
 
 fmt = '%.2f%%'
 yticks = mtick.FormatStrFormatter(fmt)  # 设置百分比形式的坐标轴
