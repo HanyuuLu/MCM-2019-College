@@ -4,7 +4,7 @@ import csv
 import dateConvert
 import dataType
 DataRoot = './data/csv'
-# DataRoot = './expdata/'
+DataRoot = './expdata/'
 
 
 def getDataSheet():
