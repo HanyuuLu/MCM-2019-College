@@ -148,7 +148,7 @@ Just choose `xelatex', no `pdflatex' or `latex' and so on.}
 \newcommand*{\song}{\CJKfamily{song}}
 
 \renewcommand\normalsize{%
-	\@setfontsize\normalsize{12.05}{14.45}%
+	\@setfontsize\normalsize{10.5}{16.5}%
 	\abovedisplayskip 12\p@ \@plus3\p@ \@minus7\p@
 	\abovedisplayshortskip \z@ \@plus3\p@
 	\belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@}
