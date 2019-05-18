@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.3.16)  18 MAY 2019 15:23
+This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.3.16)  18 MAY 2019 15:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1801,6 +1801,11 @@ Overfull \hbox (2.35254pt too wide) detected at line 24
 \TU/SimHei(0)/m/n/12.045 六、|  
  []
 
+
+Overfull \hbox (2.35254pt too wide) detected at line 29
+\TU/SimHei(0)/m/n/12.045 七、|  
+ []
+
 [2])
 \tf@toc=\write5
 \openout5 = `example.toc'.
@@ -2188,25 +2193,33 @@ File: figures/chart.png Graphic file (type bmp)
 File: figures/indexw.png Graphic file (type bmp)
 <figures/indexw.png>
 
-Overfull \hbox (1.56508pt too wide) in paragraph at lines 305--306
+Overfull \hbox (1.56508pt too wide) in paragraph at lines 306--307
  [][] 
  []
 
 File: figures/index.png Graphic file (type bmp)
 <figures/index.png>
 
-Overfull \hbox (1.56508pt too wide) in paragraph at lines 311--312
+Overfull \hbox (1.56508pt too wide) in paragraph at lines 312--313
  [][] 
  []
 
 File: figures/indexed.png Graphic file (type bmp)
 <figures/indexed.png>
 
-Overfull \hbox (1.56508pt too wide) in paragraph at lines 317--318
+Overfull \hbox (1.56508pt too wide) in paragraph at lines 318--319
  [][] 
  []
 
-[10] (e:/texlive/2018/texmf-dist/tex/latex/listings/lstlang1.sty
+
+Underfull \hbox (badness 2932) in paragraph at lines 324--325
+[]\TU/SimSun(0)/m/n/12.05 钱 凯 凯\TU/TimesNewRoman(0)/m/n/12.05 , \TU/SimSun(0)/m
+/n/12.05 蒋 秀\TU/TimesNewRoman(0)/m/n/12.05 . \TU/SimSun(0)/m/n/12.05 从 支 付 宝 微 
+信 支 付 看 第 三 方 支 付 的 盈 利 模 式 \TU/TimesNewRoman(0)/m/n/12.05 [J]. \TU/SimSun(0)/m
+/n/12.05 商 场 现 代
+ []
+
+[10] [11] (e:/texlive/2018/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 \g__fontspec_family_FangSong_int=\count341
@@ -2243,26 +2256,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (e:/texlive/2018/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 339.
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 346.
  [12]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 339.
-
-(./example.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 339.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 339.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 346.
+ (./example.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 346.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 346.
 Package rerunfilecheck Info: File `example.out' has not changed.
-(rerunfilecheck)             Checksum: F66A316CD2C8399FC536A757FCE1239F.
+(rerunfilecheck)             Checksum: 4F7DFCA80F81C2AFC92601B8AD4D31A9.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 27671 strings out of 494895
- 534912 string characters out of 6176372
- 646248 words of memory out of 5000000
- 31165 multiletter control sequences out of 15000+600000
+ 27695 strings out of 494895
+ 536186 string characters out of 6176372
+ 646061 words of memory out of 5000000
+ 31189 multiletter control sequences out of 15000+600000
  545029 words of font info for 122 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  60i,15n,82p,10455b,1240s stack positions out of 5000i,500n,10000p,200000b,80000s
