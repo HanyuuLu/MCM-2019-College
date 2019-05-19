@@ -1,0 +1,82 @@
+import os
+import sys
+import csv
+import dateConvert
+import dataType
+import time
+import copy
+import operator
+DataRoot = './data/csv'
+# DataRoot = './expdata/'
+
+
+def writeToFile(src):
+    with open('./data/dataByID.csv', 'w', newline='') as out:
+        output = csv.writer(out)
+        output.writerows(tuple(src.values()))
+    # with open('./data/dataByID.csv', 'a', newline='') as out:
+    #     output = csv.writer(out)]
+    #     for i in
+    #     output.writerows([])
+
+
+def getDataSheet():
+    timeFlag = time.time()
+    global DataRoot
+    fileList = []
+
+    for currentDict, subDict, fileName in os.walk(DataRoot):
+        for i in fileName:
+            fileList.append(i)
+    count = 0
+    sum = len(fileList)
+    res = {}
+    emptyList = []
+    for i in range(24):
+        emptyList.append(0)
+    for i in fileList:
+        print('\r[info %2d/%2d, %3.2f%%, %4.2f sec] processing %s'.ljust(60) %
+              (count, sum, count/sum*100, time.time()-timeFlag, i), end='')
+        with open(os.path.join(currentDict, i), 'r') as rawInput:
+            input = csv.reader(rawInput)
+            for raw in input:
+                try:
+                    key = int(float(raw[0]))
+                except Exception:
+                    continue
+                if key not in res:
+                    res[key] = [0, 0]
+                res[key][0] += 1
+                if raw[3] == '0.0' or raw[3] == 'Null':
+                    res[key][1] += 1
+        count += 1
+    print('\r                                 ', end='')
+    print('\r[info %2d/%2d, %3.2f%%, %4.2f sec] task finished'.ljust(80) %
+          (count, sum, count / sum * 100, time.time() - timeFlag), end='')
+    res = list(res.values())
+    res.sort(key=operator.itemgetter(0))
+    for i in res:
+        i[1] = i[1] / i[0]
+    sliceDict = {}
+    for i in res:
+        if i[0] not in sliceDict:
+            sliceDict[i[0]] = [0, 0]
+        sliceDict[i[0]][0] += 1
+        sliceDict[i[0]][1] += i[1]
+    for i in sliceDict:
+        sliceDict[i][1] = sliceDict[i][1] / sliceDict[i][0]
+    print(sliceDict)
+    return res
+
+
+def str2int(num: str) -> int:
+    try:
+       return int(float(num))
+    except Exception as e:
+        return None
+
+
+if __name__ == '__main__':
+    res = getDataSheet()
+    print(len(res))
+    writeToFile(res)
