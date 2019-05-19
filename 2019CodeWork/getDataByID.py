@@ -62,4 +62,5 @@ def str2int(num: str) -> int:
 
 if __name__ == '__main__':
     res = getDataSheet()
+    print(len(res))
     writeToFile(res)
