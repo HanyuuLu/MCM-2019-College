@@ -77,14 +77,10 @@
 \item[(6)] 假设第三方支付平台资金周转能力良好。
 \end{itemize}
 
-\section{名词解释与符号说明}
-\subsection{名词解释}
-1. K-means算法
-2. CPM广告计费方式
-\subsection{符号说明}
+\section{符号说明}
 \begin{center}
 \makeatletter\def\@captype{table}\makeatother
-\begin{table}[htbp]
+\begin{table}[h]
 \centering
 \caption{符号说明}\label{tab:aStrangeTable}\centering%添加标题 设置标签
 \begin{tabular}{c|c|c}\hline
@@ -189,14 +185,34 @@ Step4:对于多个Uptime缺失的，重复Step2$\sim$Step4步骤
 
 。。。
 \subsubsection{聚类统计分析}
-1. K-means 算法介绍
-介绍一下K-means算法
-2. 分析聚类分析图像(我只是大概这样写了，你得取个标题)
-3. 人群特征(取个标题)
+数据统计模型可以获得用户整体的支付行为特征，若想对用户群体进行分类，得到用户整体中具有各自支付行为特征的群体，就需要建立聚类分析模型，将用户群体进行划分。我们采用K-means 的聚类算法，对用户群体的支付行为特征进行聚类分析。
+
+\textbf{K-means算法 ：}K-Means算法是无监督的聚类算法，应用广泛。K-Means算法的思想为对于给定的样本集，按照样本之间的距离大小，将样本集划分为K个簇。让簇内的点尽量紧密的连在一起，而让簇间的距离尽量的大。应用于本题，我们要将用户整体划分为几个不同的群体，其中每个群体内部的支付行为特征相似，不同群体的支付行为特征不同。K-means算法流程如下：
+
+Step1: 从数据集中随机选取K个样本作为初始聚类的中心$C={c_1,c_2,...,c_k}$
+
+Step2: 针对数据集中每个样本$x_i$,计算它到K个聚类中心的距离并将其分到距离最小的聚类中心所对应的类中
+
+Step3: 针对每个类别$c_i$，重新计算它的聚类中心$c_i=\frac{1}{\left|c_i\right|}\sum_{x \in c_i}x$(即属于该类的所有样本的质心)
+
+Step4: 重复Step2和Step3直到聚类中心的位置不再变化
+
+\textbf{K-means模型构建：}
+
+本题应用于K-means模型中的特征，输入。。。
+
+由构建的K-means算法得到核数为
+
+图
+
+\textbf{基于K-means的支付行为特征分析：}
+
+
+
 \subsection{问题二的建模与解答}
 \subsubsection{第三方支付平台的收入}
 由附件三分析，第三方支付平台的收入主要由手续费，服务费，广告费，沉淀资金的利息几个部分组成。
-\begin{figure}[htbp]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{profit.png}
 \caption{盈利模型}
@@ -286,13 +302,53 @@ W=&S_{sum}*FreeRate+S_{sum}*ServiceRate+Pay_{sum}*adFree/1000\\&+\sum_{i=0}^{12}
 \subsubsection{问题二模型的求解}
 \subsubsection{问题二模型的分析}
 \subsection{问题三的建模与解答}
-当该市的公交移动支付覆盖率从四分之一变为全部覆盖时，移动支付的人数会提高，通过附件一二的数据可以求出实施移动支付的公交地铁站的移动支付占比，但由于附件1与附件2 是该市四分之一的公交与地铁安装移动支付设备后试营运期间的数据，想要得到移动支付占比则需要知道1/4试运营站点中的移动支付的客流量占比$O_{1/4}$，现通过分析南京市地铁的客流量来计算$O_{1/4}$。
+当该市的公交移动支付覆盖率从四分之一变为全部覆盖时，移动支付的人数会提高，通过附件一二的数据可以求出实施移动支付的公交地铁站的移动支付占比，但由于附件1与附件2 是该市四分之一的公交与地铁安装移动支付设备后试营运期间的数据，想要得到移动支付占比则需要知道1/4试运营站点中的移动支付的客流量占比$O_{1/4}$，现通过分析南京市地铁的客流量来计算$O_{1/4}$，其流程图如下：
 
-以南京市为例，根据高德地图数据可查到南京地铁线路与里程数，如下表所示：
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.35]{flow.png}
+\caption{移动支付占比计算}
+\end{figure}
+以南京市为例，我们通过查阅南京地铁集团跟踪评级报告获取到2017年度南京各地铁线路的客流量和里程数，我们假设移动支付试运营的1/4的线路取地铁线路客流量最大的1/4线路，由下表2给出了2017年南京各个线路的里程数与客流量的数据：
+\begin{center}
+\makeatletter\def\@captype{table}\makeatother
+\begin{table}[h]
+\centering
+\caption{南京地铁线路}\label{tab:aStrangeTable}\centering%添加标题 设置标签
+\begin{tabular}{c|c|c|c|c|c}\hline
+线路&里程(km)&客流量(万人)&线路&里程(km)&客流量(万人)\\\hline
+1号线&37.5&31241.59&10号线&21.2&4602.58\\
+2号线&37.1&26288.11&S1号线&33.0&2267.29\\
+3号线&43.9&24752.45&S3号线&35.5&117.33\\
+4号线&32.6&4890.78&S8号线&44.4&3574.44\\\hline
+\end{tabular}
+\end{table}
+\end{center}
 
-根据南京地铁线路与里程数的关系，我们假设移动支付试运营的1/4的线路为地铁线路客流量最大的1/4线路，根据南京地铁线路特征blablabla（需要数据）选择xx线路blablabla得到$O_{1/4}$
+根据表2中的数据绘制出各线路客流量比例和里程数比例。
+\begin{figure}[h]
+\centering
+\begin{minipage}[c]{0.4\textwidth}
+\centering
+\includegraphics[height=4.5cm,width=7.5cm]{5.png}
+\end{minipage}
+\begin{minipage}[c]{0.4\textwidth}
+\centering
+\includegraphics[height=4.5cm,width=7.5cm]{6.png}
+\end{minipage}
+\caption{南京地铁客流量占比}
+\end{figure}
 
-得到$O_{1/4}$之后，设
+由图3我们可以发现一号线和二号线为客流量最多的两条铁路线路，且一二号地铁线的公里数总和占地铁总公里数的26\%，近似于1/4的铁路线路，符合模型中的场景，所以取一号线与二号线为试运营的1/4线路。设$P_i$为八条线路中第i条线路的客流量，$O_{1/4}$就等于计算一号线二号线的客流量占比即：
+\begin{equation}
+O_{1/4}=\frac{P_1+P_2}{\sum_{i=1}^{8}P_i}
+\end{equation}
+
+求出$O_{1/4}$后，将南京市的客流量占比应用到该市，可得到该市1/4试运营地点的客流量。设第i月第j天1/4线路中移动支付占比为$MobileProportion(i,j)$，则根据附件一，二的统计数据可得到$MobileProportion(i,j)$的表达式：
+
+\begin{equation}
+MobileProportion(i,j)=DailyCharge^{MobilePay}_{(i,j)}/(DailyCharge_{(i,j)}*O_{1/4})
+\end{equation}
 
 \subsubsection{问题三模型的建立}
 
