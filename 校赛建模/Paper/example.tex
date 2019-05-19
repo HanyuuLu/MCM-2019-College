@@ -160,11 +160,19 @@ Step4:对于多个Uptime缺失的，重复Step2$\sim$Step4步骤
 1. 日均公交移动支付与总支付笔数小时分布图
 
 统计平均一天中每小时内的公交支付总笔与移动支付的总笔数，绘制柱状图，其中移动支付笔数包含在总笔数之中。
+\begin{figure}[h]
+\includegraphics[scale=0.8]{hour.png}
+\caption{公交移动支付与总支付笔数按小时分布图}
+\end{figure}
+
 
 2.公交移动支付与总支付笔数按日期分布图
 
 统计每天的公交支付笔数与公交移动支付笔数，按日期增长顺序绘制折线图。
-
+\begin{figure}[h]
+\includegraphics[scale=0.5]{day.png}
+\caption{公交移动支付与总支付笔数按日期分布图}
+\end{figure}
 3.公交支付笔数星期内分布图
 
 将四周的公交支付笔数分别按一星期七天画出四条折线图
@@ -180,6 +188,11 @@ Step4:对于多个Uptime缺失的，重复Step2$\sim$Step4步骤
 6.公交移动支付占比图
 
 将四周每周的移动支付占比绘制饼图（4张）
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{month.png}
+\caption{四个月支付占比}
+\end{figure}
 
 \subsubsection{支付特征分析}
 
@@ -199,6 +212,7 @@ Step4: 重复Step2和Step3直到聚类中心的位置不再变化
 
 \textbf{K-means模型构建：}
 
+<<<<<<< HEAD
 本题应用于K-means模型中的特征，输入。。。
 
 由构建的K-means算法得到核数为
@@ -208,6 +222,44 @@ Step4: 重复Step2和Step3直到聚类中心的位置不再变化
 \textbf{基于K-means的支付行为特征分析：}
 
 
+=======
+本题构建K-means模型，每一个样本点为一个用户，表示为一个$item[24]$的24维数组，数组中$0\sim23$表示该用户24小时中每小时的公交支付总次数。通过聚类模型我们可以根据用户一天中不同时间的支付规律对用户群体进行划分。我们选择海明距离作为相似度函数计算，计算两个用户$item_1$与$item_2$的每小时的乘车次数差的绝对值的总和作为两个样本之间的距离$distance$，$distance$的值越大则表示两个用户支付行为特征差异越大：
+\begin{equation}
+distance=\sum_{i=0}^{23}|item_1[i]-item_2[i]|
+\end{equation}
+
+K-means模型将用户样本集划分为K个簇，每个簇之间的distance尽可能大，簇内的点尽可能紧密地连在一起，从而得出用户的K种支付行为特征,我们通过修改K的值，经过多次训练，找到了用户支付行为较为明显的划分，此时K=5，用户的5种支付行为描绘如下图，每个子图的横坐标为小时，纵坐标为公交支付次数：
+\textbf{这里可加入每一个种类的比例}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{51.png}
+\caption{聚类分析模型}
+\end{figure}
+
+\textbf{基于K-means模型的支付行为特征描述：}
+
+由K-means模型生成的五种用户支付特征图，我们对这五种特征进行描述：
+
+1.用户群体在8点与18点左右出现公交支付峰值，其中8点的峰值最高，约为6次，总出行次数不多。
+
+2.用户群体在9点至16点区间内出现公交支付峰值，约为4次，总出行次数较多。
+
+3.用户群体在8点与15点左右出现峰值，约为2次与3次，总出行次数不多。
+
+4.用户群体公交支付次数极少，几乎不乘坐公共交通。
+
+5.用户群体在7点与18点左右出现明显峰值，约为12次，总出行次数较多。
+
+\textbf{基于K-means模型的支付行为特征分析：}
+
+1.综合五个群体我们发现所有用户群体基本都在7-9点早高峰时间段与17-19点晚高峰时间段出现公交支付峰值，这与我们数据统计模型所得出的特征是一致的，这一部分峰值的贡献者主要是乘坐公共交通上下班的上班族与乘公共交通上放学的学生。
+
+2.用户群体1，3，5具有相似的形状，其中用户群体5的特征最为鲜明，在早晚高峰出现了很高的支付次数，在其他时间段很少有支付记录，可推测这类用户主要为上班族与学生群体，具有规律的出行时间，并且倾向于使用公共交通作为出行工具。用户群体1，3的峰值较小，推测其为偶尔使用公共交通出行的上班与学生群体。
+
+3.用户群体2在9点到17点的区间有峰值，恰好和早晚高峰错开，可以推测这类用户群体为并不需要上班与上学的用户群体，以退休的老年人为主，避开早晚高峰进行活动，主要公交出行时间为中午时分。
+
+4.用户群体4的公交支付次数极少，可推测其为非本市居民，以游客为主。此类用户由于记录很少，无法通过变化图表分析出其行为特征。
+>>>>>>> 3f50e2b37707baaf6a348dc60707567583aa77d5
 
 \subsection{问题二的建模与解答}
 \subsubsection{第三方支付平台的收入}
@@ -250,23 +302,18 @@ UserBalance(0)=(\overline {remian} * {NumberOfPeople})*a_3
 \begin{equation}
 SedMoney^j(i)=\left\{
 \begin{aligned}
-& (1+r)*(1-t_1)SedMoney^{j-1}(i) &j=3n-2&&j != 1\\
-&(1+r)*SedMoney^{j-1}(i)  & j=3n-1or3n\\
 &SedMoney(i)  & j=0\\
+&(1+r)*SedMoney^{j-1}(i)  & j\neq0\\
 \end{aligned}
 \right.
 \end{equation}
+
 \begin{equation}
-UserBalance(i)=\left\{
-\begin{aligned}
-& (1+r)*(1-t_1)UserBalance(i-1) &j=3n-2&&j != 1\\
-&(1+r)*UserBalance(i-1)  & j=3n-1or3n\\
-\end{aligned}
-\right.
+UserBalance(i)=(1+r)*UserBalance(i-1)
 \end{equation}
-计算沉淀资金的年利润：
+计算沉淀资金的年利润,设银行收取的手续费率为$s_1$，由于取出资金的时候要收取手续费，所以沉淀资金在年底积累的总额除去手续费之后为原来资金的$(1-s_1)$倍：
 \begin{equation}
-T_4=\sum_{i=0}^{12} SedMoney^{12-i}(i)-\sum_{i=0}^{12} SedMoney(i)+UserBalance(12)-UserBalance(0)
+T_4=(\sum_{i=0}^{12} SedMoney^{12-i}(i)+UserBalance(12))*(1-s_1)-\sum_{i=0}^{12} SedMoney(i)-UserBalance(0)
 \end{equation}
 其中，$\sum_{i=0}^{12} SedMoney^{12-i}(i)$表示年底时，每个月流水金额的值。$UserBalance(12)$表示年底时用户总余额的值。
 \subsubsection{第三方支付平台的支出}
@@ -295,7 +342,7 @@ W=T_1+T_2+T_3+T_4-C_1-C_2
 结合表达式$1\sim10$可得：
 \begin{equation}
 \begin{split}
-W=&S_{sum}*FreeRate+S_{sum}*ServiceRate+Pay_{sum}*adFree/1000\\&+\sum_{i=0}^{12} SedMoney^{12-i}(i)-\sum_{i=0}^{12} SedMoney(i)+UserBalance(12)-UserBalance(0)\\&-(N_{machine}*(V_{machine}+V_{maintain})+S)-N_{ad}*V_{ad}
+W=&S_{sum}*FreeRate+S_{sum}*ServiceRate+Pay_{sum}*adFree/1000\\&+\sum_{i=0}^{12} SedMoney^{12-i}(i)-(\sum_{i=0}^{12} SedMoney^{12-i}(i)+UserBalance(12))*(1-s_1)-\sum_{i=0}^{12} SedMoney(i)-UserBalance(0)\\&-(N_{machine}*(V_{machine}+V_{maintain})+S)-N_{ad}*V_{ad}
 \end{split}
 \end{equation}
 
@@ -303,6 +350,7 @@ W=&S_{sum}*FreeRate+S_{sum}*ServiceRate+Pay_{sum}*adFree/1000\\&+\sum_{i=0}^{12}
 \subsubsection{问题二模型的分析}
 \subsection{问题三的建模与解答}
 当该市的公交移动支付覆盖率从四分之一变为全部覆盖时，移动支付的人数会提高，通过附件一二的数据可以求出实施移动支付的公交地铁站的移动支付占比，但由于附件1与附件2 是该市四分之一的公交与地铁安装移动支付设备后试营运期间的数据，想要得到移动支付占比则需要知道1/4试运营站点中的移动支付的客流量占比$O_{1/4}$，现通过分析南京市地铁的客流量来计算$O_{1/4}$，其流程图如下：
+<<<<<<< HEAD
 
 \begin{figure}[h]
 \centering
@@ -348,6 +396,53 @@ O_{1/4}=\frac{P_1+P_2}{\sum_{i=1}^{8}P_i}
 
 \begin{equation}
 MobileProportion(i,j)=DailyCharge^{MobilePay}_{(i,j)}/(DailyCharge_{(i,j)}*O_{1/4})
+=======
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.35]{flow.png}
+\caption{移动支付占比计算}
+\end{figure}
+以南京市为例，我们通过查阅南京地铁集团跟踪评级报告获取到2017年度南京各地铁线路的客流量和里程数，我们假设移动支付试运营的1/4的线路取地铁线路客流量最大的1/4线路，由下表2给出了2017年南京各个线路的里程数与客流量的数据：
+\begin{center}
+\makeatletter\def\@captype{table}\makeatother
+\begin{table}[h]
+\centering
+\caption{南京地铁线路}\label{tab:aStrangeTable}\centering%添加标题 设置标签
+\begin{tabular}{c|c|c|c|c|c}\hline
+线路&里程(km)&客流量(万人)&线路&里程(km)&客流量(万人)\\\hline
+1号线&37.5&31241.59&10号线&21.2&4602.58\\
+2号线&37.1&26288.11&S1号线&33.0&2267.29\\
+3号线&43.9&24752.45&S3号线&35.5&117.33\\
+4号线&32.6&4890.78&S8号线&44.4&3574.44\\\hline
+\end{tabular}
+\end{table}
+\end{center}
+
+根据表2中的数据绘制出各线路客流量比例和里程数比例。
+\begin{figure}[h]
+\centering
+\begin{minipage}[c]{0.4\textwidth}
+\centering
+\includegraphics[height=4.5cm,width=7.5cm]{5.png}
+\end{minipage}
+\begin{minipage}[c]{0.4\textwidth}
+\centering
+\includegraphics[height=4.5cm,width=7.5cm]{6.png}
+\end{minipage}
+\caption{南京地铁客流量占比}
+\end{figure}
+
+由图3我们可以发现一号线和二号线为客流量最多的两条铁路线路，且一二号地铁线的公里数总和占地铁总公里数的26\%，近似于1/4的铁路线路，符合模型中的场景，所以取一号线与二号线为试运营的1/4线路。设$P_i$为八条线路中第i条线路的客流量，$O_{1/4}$就等于计算一号线二号线的客流量占比即：
+\begin{equation}
+O_{1/4}=\frac{P_1+P_2}{\sum_{i=1}^{8}P_i}
+\end{equation}
+
+求出$O_{1/4}$后，将南京市的客流量占比应用到该市，可得到该市1/4试运营地点的客流量。设第i月第j天1/4线路中移动支付占比为$MobileProportion(i,j)$，则根据附件一，二的统计数据可得到$MobileProportion(i,j)$的表达式：
+
+\begin{equation}
+MobileProportion(i,j)=\frac{DailyCharge^{MobilePay}_{(i,j)}}{(DailyCharge_{(i,j)}*O_{1/4})}
+>>>>>>> 3f50e2b37707baaf6a348dc60707567583aa77d5
 \end{equation}
 
 \subsubsection{问题三模型的建立}
@@ -358,9 +453,29 @@ MobileProportion(i,j)=DailyCharge^{MobilePay}_{(i,j)}/(DailyCharge_{(i,j)}*O_{1/
 
 \section{模型的评价}
 \subsection{模型的优点}
+1. 本模型尽量的搜集了能获取的真实资料，包括南京市地铁各线路的客流量与里程、各大支付平台2017年市场份额以及蚂蚁金服2017年盈利，从而将
+实际情况大致的进行的还原。  
+ 
+2. 模型一使用K—means方法进行聚类分析得出不同的用户群体进行特征分析，特征提取。   
+
+3. 模型三给出了试运营期间1/4线路内移动支付份额随时间的变化图，根据图片，我们拟合了移动支付正式运营以后，移动支付份额的变化。
+
+4. 针对附件1中的庞大数据，模型采用了jupyter、parso等各种强大的python库进行处理，效果不错，遍历数据耗时较短。
 \subsection{模型的缺点}
+1. 直接将1/4热门线路内移动支付份额推广到整体市场，忽视了移动支付覆盖率的提升对用户消费行为的影响。
+
+2. 模型二中对于无形收益没有给出一个定量的评估，给盈利模型带来误差。对广告推广以及用户数量，没有给出一个定量的关系。
 \subsection{模型的改进}
+1. 在模型求解的过程中存在许多不确定因素，包括推广费用对用户数量的影响、不同年龄段对移动支付的态度等等。
+
+2. 模型二中的只考虑了CPM形式广告费带来的收益，但现实情况中，可能存在CPC、PPC、CPL等多种形式的广告费，我们可以对其进行综合考虑，得出第三方平台的日均广告收益。
 \section{模型的推广与应用}
+1. 本文中模型三可以应用出不同城市中，估算出此城市运营第三方公共交通支付能带来的收益。
+
+2. 本文中模型二充分考虑各种盈利方式以及支出方式，其它关于求解利润的问题也可以参考模型二，具有较强的可推广性。
+
+3. 本文中的模型二可以不仅仅用于求解有关公交的第三方支付平台，也可以适用于求解校园生活等主题有关的第三方支付平台。
+
 
 
 %参考文献
