@@ -8,18 +8,19 @@ def reader():
 		print('[error] Please input file name')
 		exit()
 	resList = list()
-	x = list()
-	y = list()
 	try:
 		workbook = xlrd.open_workbook(fileName)
 		print('[info] file %s loaded successfully, fitting for the model'%fileName)
 
 		for sheetNo in range(workbook.nsheets):
 			sheet = workbook.sheet_by_index(sheetNo)
+			x = list()
+			y = list()
 			for i in range(sheet.nrows):
 				x.append(sheet.cell(i,0).value)
 				y.append(sheet.cell(i,1).value)
 			resList.append([x,y])
+
 	except Exception as e:
 		print('[error] There is problem with input file name %s'%fileName)
 		exit()
