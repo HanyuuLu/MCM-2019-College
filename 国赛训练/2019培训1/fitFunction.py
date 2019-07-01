@@ -1,5 +1,5 @@
-# 给出的是半径
-def fitFun(x:float)->float:
+# 给出的是直径
+def diaFun(x:float)->float:
 	if x>=0 and x<=1435:
 		return 7.087e-10*x**3 - 1.688e-05*x**2 + 0.03858*x + 7.126
 	elif x>1435 and x<=1585:
@@ -11,9 +11,39 @@ def fitFun(x:float)->float:
 	else:
 		return 0
 
+# 半径
+def fitFun(x:float)->float:
+	return (diaFun(x))/2
+
 # 标枪参数自身描述常量类
 class LimitRange:
 	def __init__(self):
+		# 长轴上下限
 		self.UPPER_LIMIT = 2640
 		self.LOWER_LIMIT = 0
+		# 计算精度
 		self.DISP = 1e-3
+		# 出手位置
+		self.INITIAL_X = 0
+		self.INITIAL_Y = 2
+		# 重量
+		self.WEIGHT=600
+		# 质心位置
+		self.POS_FOCUS = 1345.734932207
+		# 脱手持枪角
+		self.INITIAL_THETA = 36.6
+		# 初始攻角
+		self.INTITIAL_BETA = -0.9
+		# 初始角速度
+		self.INITIAL_VTHETA = 0
+		# 标枪密度
+		self.B_RHO = 600/19268155911.623592
+		# 转动惯量
+		self.B_J = 41239562955.83207
+# 空气参数
+class Air:
+	def __init__(self, *args, **kwargs):
+		self.RHO = 1.184e-6
+		self.CP = 0
+		self.CF = 0
+		self.GRAVITY = 9.8 # N/g
