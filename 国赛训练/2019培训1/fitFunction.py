@@ -10,3 +10,10 @@ def fitFun(x:float)->float:
 		return -2.209e-06*x**3 + 0.01631*x**2 - 40.15*x + 3.295e+04
 	else:
 		return 0
+
+# 标枪参数自身描述常量类
+class LimitRange:
+	def __init__(self):
+		self.UPPER_LIMIT = 2640
+		self.LOWER_LIMIT = 0
+		self.DISP = 1e-3
