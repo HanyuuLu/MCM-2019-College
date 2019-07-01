@@ -17,8 +17,8 @@ def reader():
 			x = list()
 			y = list()
 			for i in range(sheet.nrows):
-				x.append(sheet.cell(i,0).value)
-				y.append(sheet.cell(i,1).value)
+				x.append(sheet.cell(i,0).value/1000)
+				y.append(sheet.cell(i,1).value/1000)
 			resList.append([x,y])
 
 	except Exception as e:
@@ -44,9 +44,9 @@ def multiXreader():
 			for i in range(sheet.nrows):
 				tempX = list()
 				for j in range(sheet.ncols-1):
-					tempX.append(sheet.cell(i,j).value)
+					tempX.append(sheet.cell(i,j).value/1000)
 				x.append(tempX)
-				y.append(sheet.cell(i,sheet.ncols-1).value)
+				y.append(sheet.cell(i,sheet.ncols-1).value/1000)
 			resList.append([x,y])
 	except Exception:
 		print('[error] There is problem with input file name %s'%fileName)

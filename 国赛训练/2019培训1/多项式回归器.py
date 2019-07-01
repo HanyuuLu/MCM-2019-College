@@ -12,7 +12,7 @@ def polynomialFit(x:list,y:list):
 	y = np.array(y)
 	# print('y is :\n',y)
 	#用3次多项式拟合
-	f1 = np.polyfit(x, y, 3)
+	f1 = np.polyfit(x, y, 2)
 	print('f1 is :\n',f1)
 
 	p1 = np.poly1d(f1)

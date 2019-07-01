@@ -3,19 +3,20 @@ from fitFunction import LimitRange,Air
 import numpy
 import math
 from math import degrees
+from math import radians
 from numpy import sign
 
 class Obj(LimitRange,Air):
 	def __init__(self,*args, **kwargs):
 		LimitRange.__init__(self)
 		Air.__init__(self)
-		self.S0 = None
-		self.M_TMP = None	#转动惯量
+		self.S0 = 0.06412420498140184	# 投影面积
+		self.M_TMP = 9.618450686734025
 		#平动
 		self.Xx = self.INITIAL_X
 		self.Xy = self.INITIAL_Y
-		self.Vx = 0
-		self.Vy = 0
+		self.Vx = math.cos(radians(self.INITIAL_THETA))*self.INITIAL_SPEED
+		self.Vy = math.sin(radians(self.INITIAL_THETA))*self.INITIAL_SPEED
 		self.Ax = 0
 		self.Ay = 0
 		# 转动
@@ -27,8 +28,8 @@ class Obj(LimitRange,Air):
 	def reset(self):
 		self.Xx = self.INITIAL_X
 		self.Xy = self.INITIAL_Y
-		self.Vx = 0
-		self.Vy = 0
+		self.Vx = math.cos(radians(self.INITIAL_THETA))*self.INITIAL_SPEED
+		self.Vy = math.sin(radians(self.INITIAL_THETA))*self.INITIAL_SPEED
 		self.Ax = 0
 		self.Ay = 0
 		# 转动
@@ -56,18 +57,19 @@ class Obj(LimitRange,Air):
 		print('calculating finished')
 		return S
 	def FpyCalc(self):
-		res = (self.Vx*math.cos(degrees(self.beta)))**2*math.sin(degrees(self.theta))
+		res = (self.Vx*math.cos(radians(self.beta)))**2*math.sin(radians(self.theta))
 		res *= -sign(self.beta) * self.RHO * self.CP* self.S0
 		return res
 	def FpzCalc(self):
-		res = (self.Vy*math.cos(degrees(self.beta)))**2*math.cos(degrees(self.theta))
+		res = (self.Vy*math.cos(radians(self.beta)))**2*math.cos(radians(self.theta))
 		res *= -sign(self.beta) * self.RHO * self.CP* self.S0
+		return res
 	def FfyCalc(self):
-		res = (self.Vx*math.sin(degrees(self.beta)))**2*math.cos(degrees(self.theta))
+		res = (self.Vx*math.sin(radians(self.beta)))**2*math.cos(radians(self.theta))
 		res *= -math.pi/2 * self.RHO * self.CF*self.S0
 		return res
 	def FfzCalc(self):
-		res = (self.Vy*math.sin(degrees(self.beta)))**2*math.sin(degrees(self.theta))
+		res = (self.Vy*math.sin(radians(self.beta)))**2*math.sin(radians(self.theta))
 		res *= -math.pi/2 * self.RHO * self.CF*self.S0
 		return res
 	def Fx(self):	# Y轴
@@ -85,13 +87,24 @@ class Obj(LimitRange,Air):
 		self.Vy+=self.DISP*self.Ay
 	def rotationUpdate(self):
 		self.theta+=self.Vtheta*self.DISP
-		self.Atheta = self.M()/self.B_J
+		self.Atheta = degrees(self.M()/self.B_J)
 		self.Vtheta+=self.DISP*self.Atheta
 		self.beta = self.theta-degrees(math.atan(self.Vy/self.Vx))
+	def calc(self):
+		key = 0
+		print(self.Xy+math.sin(radians(self.theta))*self.TOUCH_LENGTH)
+		while (self.Xy+math.sin(radians(self.theta))*self.TOUCH_LENGTH)>0:
+			key+=1
+			self.linearUpdate()
+			self.rotationUpdate()
+			if key%100==0:
+				print('%.1f sec\t%f\t%f\t\t%f\t%f'%(key*self.DISP,self.Xx,self.Xy,self.Vx,self.Vy))
+		print('[x]%f'%self.Xx)
+
 if __name__=='__main__':
 	obj = Obj()
-	print(obj.S0Calc())
-	print(obj.M_TMPCalc())
-	print(obj.FpyCalc())
+	# print(obj.S0Calc())
+	# print(obj.M_TMPCalc())
+	obj.calc()
 
 

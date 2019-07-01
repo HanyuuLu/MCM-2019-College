@@ -7,7 +7,7 @@ class Volume(fitFunction.LimitRange):
 	def calc(self):
 		vol = 0
 		for x in numpy.arange(self.LOWER_LIMIT,self.UPPER_LIMIT,self.DISP):
-			vol += x**2
+			vol += fitFunction.fitFun(x)**2
 			if x%1e-3==0:
 				print('\rprocessing %f,%f.2%%'%(x,(x-self.LOWER_LIMIT)/(self.UPPER_LIMIT-self.LOWER_LIMIT)*100),end = '')
 		print('')

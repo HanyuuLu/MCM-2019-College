@@ -6,7 +6,7 @@ workbook = xlrd.open_workbook('pr1_data.xlsx')
 sheet = workbook.sheet_by_index(0)
 data = list()
 for i in range(sheet.nrows):
-	data.append((sheet.cell(i,0).value,sheet.cell(i,1).value/2))
+	data.append((sheet.cell(i,0).value/1000,sheet.cell(i,1).value/2000))
 count=len(data)-1
 orgData = copy.deepcopy(data)
 for i in range(count,-1,-1):
