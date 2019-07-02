@@ -30,6 +30,8 @@ class GradidentDesend:
 				[self.cf,self.cp-self.deltaCp],
 				]
 			self.seriesRes = list()
+			ccount = 0
+			print('\r[batch %d, running %d %d/4*24]'%(count,int(ccount/24),ccount%24),end = '  ')
 			for x in self.series:
 				self.obj.CF=x[0]
 				self.obj.CP=x[1]
@@ -37,10 +39,12 @@ class GradidentDesend:
 					self.tempDeltaY.append(
 						self.execSig(self.data[0][i],self.data[1][i])
 					)
+					ccount+=1
+					print('\r[batch %d, running %d %d/4*24]'%(count,int(ccount/24),ccount%24),end = '  ')
 				self.deltaY.append(sum(self.tempDeltaY))
 				self.tempDeltaY.clear()
-			self.cf+=(self.deltaY[0]-self.deltaY[1])/self.deltaCf
-			self.cp+=(self.deltaY[2]-self.deltaY[3])/self.deltaCp
+			self.cf+=(self.deltaY[0]-self.deltaY[1])*self.deltaCf
+			self.cp+=(self.deltaY[2]-self.deltaY[3])*self.deltaCp
 			self.record.append([self.cf,self.cp,sum(self.deltaY)/4])
 			print(self.cf,self.cp,sum(self.deltaY)/4)
 			count+=1

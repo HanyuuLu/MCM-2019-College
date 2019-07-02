@@ -97,9 +97,9 @@ class Obj(LimitRange,Air):
 			key+=1
 			self.linearUpdate()
 			self.rotationUpdate()
-			if key%1000==0:
-				print('%.1f sec\t%f\t%f\t\t%f\t%f'%(key*self.DISP,self.Xx,self.Xy,self.Vx,self.Vy))
-		print('')
+		# 	if key%1000==0:
+		# 		print('%.1f sec\t%f\t%f\t\t%f\t%f'%(key*self.DISP,self.Xx,self.Xy,self.Vx,self.Vy))
+		# print('')
 		# print('[x]%f'%self.Xx)
 		return self.Xx
 
