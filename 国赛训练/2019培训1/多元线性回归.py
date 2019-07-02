@@ -33,9 +33,9 @@ if __name__ == "__main__":
 			for i in range(sheet.nrows):
 				tempX = list()
 				for j in range(sheet.ncols-1):
-					tempX.append(sheet.cell(i,j).value)
+					tempX.append(sheet.cell(i,j).value/1000)
 				x.append(tempX)
-				y.append(sheet.cell(i,sheet.ncols-1).value)
+				y.append(sheet.cell(i,sheet.ncols-1).value/1000)
 			print('=== sheet %d ==='%sheetNo)
 			linearFit(x,y)
 	except Exception:
