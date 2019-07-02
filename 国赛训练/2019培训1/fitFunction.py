@@ -50,6 +50,9 @@ class LimitRange:
         self.volume = 0.0013491598343485102
         # 初速度
         self.INITIAL_SPEED = 30
+        self.INITIAL_SPEED = 31.70
+        # 初始角速度
+        self.INITIAL_OMEGA = 0
 # 空气参数
 
 
@@ -63,3 +66,7 @@ class Air:
         self.CP = 0.058193268
         self.CF = 0.003180604
         self.GRAVITY = 9.8  # N/g
+        # wind speed
+        self.WIND_SPEED = 9
+        # self.WIND_SPEED = 6
+        # self.WIND_SPEED = 3
