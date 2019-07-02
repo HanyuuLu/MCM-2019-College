@@ -52,3 +52,30 @@ def multiXreader():
 		print('[error] There is problem with input file name %s'%fileName)
 		exit()
 	return resList
+
+def multiXreaderSPC():
+	try:
+		fileName = sys.argv[-1]
+	except Exception:
+		print('[error] Please input file name')
+		exit()
+	resList = list()
+	x = list()
+	y = list()
+	try:
+		workbook = xlrd.open_workbook(fileName)
+		print('[info] file %s loaded successfully, fitting for the model'%fileName)
+
+		for sheetNo in range(workbook.nsheets):
+			sheet = workbook.sheet_by_index(sheetNo)
+			for i in range(sheet.nrows):
+				tempX = list()
+				for j in range(sheet.ncols-1):
+					tempX.append(sheet.cell(i,j).value)
+				x.append(tempX)
+				y.append(sheet.cell(i,sheet.ncols-1).value)
+			resList.append([x,y])
+	except Exception:
+		print('[error] There is problem with input file name %s'%fileName)
+		exit()
+	return resList

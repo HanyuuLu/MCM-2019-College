@@ -23,7 +23,7 @@ class Obj(LimitRange,Air):
 		self.theta = self.INITIAL_THETA
 		self.Vtheta = self.INITIAL_VTHETA
 		self.Atheta = 0
-		self.beta = self.INTITIAL_BETA
+		self.beta = self.INITIAL_BETA
 	# Reset status
 	def reset(self):
 		self.Xx = self.INITIAL_X
@@ -36,7 +36,7 @@ class Obj(LimitRange,Air):
 		self.theta = self.INITIAL_THETA
 		self.Vtheta = self.INITIAL_VTHETA
 		self.Atheta = 0
-		self.beta = self.INTITIAL_BETA
+		self.beta = self.INITIAL_BETA
 	# 标枪投影面积
 	def S0Calc(self):
 		print('calculating')
@@ -92,19 +92,21 @@ class Obj(LimitRange,Air):
 		self.beta = self.theta-degrees(math.atan(self.Vy/self.Vx))
 	def calc(self):
 		key = 0
-		print(self.Xy+math.sin(radians(self.theta))*self.TOUCH_LENGTH)
+		# print(self.Xy+math.sin(radians(self.theta))*self.TOUCH_LENGTH)
 		while (self.Xy+math.sin(radians(self.theta))*self.TOUCH_LENGTH)>0:
 			key+=1
 			self.linearUpdate()
 			self.rotationUpdate()
-			if key%100==0:
+			if key%1000==0:
 				print('%.1f sec\t%f\t%f\t\t%f\t%f'%(key*self.DISP,self.Xx,self.Xy,self.Vx,self.Vy))
-		print('[x]%f'%self.Xx)
+		print('')
+		# print('[x]%f'%self.Xx)
+		return self.Xx
 
 if __name__=='__main__':
 	obj = Obj()
 	# print(obj.S0Calc())
 	# print(obj.M_TMPCalc())
-	obj.calc()
+	print(obj.calc())
 
 

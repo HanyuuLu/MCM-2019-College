@@ -33,7 +33,7 @@ class LimitRange:
 		# 脱手持枪角
 		self.INITIAL_THETA = 36.6-0.9
 		# 初始攻角
-		self.INTITIAL_BETA = -0.9
+		self.INITIAL_BETA = -0.9
 		# 初始角速度
 		self.INITIAL_VTHETA = 0
 		# 标枪密度

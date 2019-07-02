@@ -1,2 +1,0 @@
-class calc:
-    pass
