@@ -22,7 +22,7 @@ class Obj(LimitRange, Air):
         self.Ay = 0
         # 转动
         self.theta = self.INITIAL_THETA
-        self.Vtheta = self.INITIAL_VTHETA
+        self.Vtheta = self.INITIAL_OMEGA
         self.Atheta = 0
         self.beta = self.INITIAL_BETA
     # Reset status
@@ -36,7 +36,7 @@ class Obj(LimitRange, Air):
         self.Ay = 0
         # 转动
         self.theta = self.INITIAL_THETA
-        self.Vtheta = self.INITIAL_VTHETA
+        self.Vtheta = self.INITIAL_OMEGA
         self.Atheta = 0
         self.beta = self.INITIAL_BETA
     # 标枪投影面积
@@ -62,22 +62,22 @@ class Obj(LimitRange, Air):
         return S
 
     def FpyCalc(self):
-        res = (self.Vx*math.cos(radians(self.beta)))**2*math.sin(radians(self.theta))
+        res = (self.Vx*math.cos(radians(self.beta))+self.WIND_SPEED*math.sin(radians(self.theta)))**2*math.sin(radians(self.theta))
         res *= -sign(self.beta) * self.RHO * self.CP * self.S0
         return res
 
     def FpzCalc(self):
-        res = (self.Vy*math.cos(radians(self.beta)))**2*math.cos(radians(self.theta))
+        res = (self.Vy*math.cos(radians(self.beta))+self.WIND_SPEED*math.sin(radians(self.theta)))**2*math.cos(radians(self.theta))
         res *= -sign(self.beta) * self.RHO * self.CP * self.S0
         return res
 
     def FfyCalc(self):
-        res = (self.Vx*math.sin(radians(self.beta)))**2*math.cos(radians(self.theta))
+        res = (self.Vx*math.sin(radians(self.beta))+self.WIND_SPEED*math.cos(radians(self.theta)))**2*math.cos(radians(self.theta))
         res *= -math.pi/2 * self.RHO * self.CF*self.S0
         return res
 
     def FfzCalc(self):
-        res = (self.Vy*math.sin(radians(self.beta)))**2*math.sin(radians(self.theta))
+        res = (self.Vy*math.sin(radians(self.beta))+self.WIND_SPEED*math.cos(radians(self.theta)))**2*math.sin(radians(self.theta))
         res *= -math.pi/2 * self.RHO * self.CF*self.S0
         return res
 
@@ -88,7 +88,7 @@ class Obj(LimitRange, Air):
         return self.FpzCalc()+self.FfzCalc()-self.WEIGHT*self.GRAVITY
 
     def M(self):  # 转动力矩
-        return self.M_TMP*sign(self.beta)*(self.Vx**2+self.Vy**2)*(math.cos(self.beta)**2)
+        return self.M_TMP*sign(self.beta)*(math.sqrt((self.Vx**2+self.Vy**2))*(math.sin(self.beta))+ self.WIND_SPEED*math.sin(self.theta))**2
 
     def linearUpdate(self):
         self.Xx += self.DISP*self.Vx
