@@ -70,3 +70,4 @@ class Air:
         self.WIND_SPEED = 9
         # self.WIND_SPEED = 6
         # self.WIND_SPEED = 3
+        self.WIND_SPEED = 0
