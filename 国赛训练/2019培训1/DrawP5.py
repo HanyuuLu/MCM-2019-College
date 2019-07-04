@@ -8,6 +8,7 @@ class Draw:
         self.theta = self.obj.INITIAL_THETA
         self.beta = self.obj.INITIAL_BETA
         self.omega = self.obj.INITIAL_OMEGA
+        self.windSpeed=self.obj.WIND_SPEED
 
     def execSig(self):
         self.obj.reset()
@@ -20,15 +21,15 @@ class Draw:
         # 风向及风速
     def exec(self):
         self.series = [
-            self.omega - 8,
-            self.omega - 4,
-            self.omega,
-            self.omega + 2,
-            self.omega + 4
+            self.theta - 4,
+            self.theta - 2,
+            self.theta,
+            self.theta + 2,
+            self.theta + 4
         ]
         resList = list()
         for x in self.series:
-            self.obj.INITIAL_OMEGA = x
+            self.obj.INITIAL_THETA= x
             res = self.execSig()
             print(res[0])
             resList.append(res[-2:])
