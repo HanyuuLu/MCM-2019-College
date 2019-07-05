@@ -1,5 +1,6 @@
 import math
 
+
 # 系统
 class SysInfo:
     def __init__(self, **kwargs):
@@ -11,8 +12,8 @@ class SysInfo:
         # 重力系数
         self.gravityRate = 9.8
         # 风速
-        self.WindSpeed  = 12
-        
+        self.WindSpeed = 12
+
 
 # 节点基类
 class Node(SysInfo):
@@ -35,9 +36,10 @@ class Node(SysInfo):
         # 下位结点的力
         self.beta = 0
 
+
 # 链结
 class Chain(Node):
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
 
@@ -46,7 +48,7 @@ class Buoy(Node):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.HeightWaterLine = 0
-        self.buoyancy = math.pi * self.R ** 2 *self.HeightWaterLine
+        self.buoyancy = math.pi * self.R ** 2 * self.HeightWaterLine
 
 
 # 钢桶
