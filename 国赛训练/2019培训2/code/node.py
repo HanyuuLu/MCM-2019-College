@@ -3,9 +3,11 @@ import math
 # 系统
 class SysInfo:
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__()
         # 水的密度
         self.thoWater = 1.025e3
+        # 水深
+        self.WaterDeepth = 18
         # 重力系数
         self.gravityRate = 9.8
         # 风速
@@ -15,6 +17,7 @@ class SysInfo:
 # 节点基类
 class Node(SysInfo):
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         # 质量
         self.M = kwargs['node']['M']
         # 半径
@@ -22,7 +25,7 @@ class Node(SysInfo):
         # 高度
         self.H = kwargs['node']['H']
         # 系统倾角
-        self.gamma = kwargs['node']['gamma']
+        self.gamma = 0
         # 系统浮力
         self.buoyancy = math.pi * self.R ** 2 * self.H
         # 系统重力
@@ -47,14 +50,14 @@ class Buoy(Node):
 
 
 # 钢桶
-class Drums:
+class Drums(Node):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.MBall = kwargs['Drums']['MBall']
+        self.MBall = kwargs['node']['MBall']
 
 
 # 钢管
-class Pipe:
+class Pipe(Node):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
