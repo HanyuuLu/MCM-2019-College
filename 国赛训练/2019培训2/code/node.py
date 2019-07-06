@@ -41,6 +41,8 @@ class Node(SysInfo):
         self.alpha = 0
         # 下位结点的力
         self.beta = 0
+        # 水流的力
+        self.FFlow = 0
 
 
 # 链结

@@ -65,17 +65,32 @@ if __name__ == '__main__':
     # 未知数队列
     varList = list()
     # 计算式
+    # 各个节点的gamma角和水流产生的力
     for i in objectList['chain']:
-        i.gamma = symbols('GammaChainNode')
+        i.gamma = symbols('GammaChainNode_%d'%objectList['chain'].index(i))
         varList.append(i.gamma)
+        i.FFlow = symbols('FFlowChainNode_%d'%objectList['chain'].index(i))
+        varList.append(i.FFlow)
     for i in objectList['pipe']:
-        i.gamma = symbols('GammaPipe')
+        i.gamma = symbols('GammaPipe_%d'%objectList['pipe'].index(i))
         varList.append(i.gamma)
+        i.FFlow = symbols('FFlowPipe_%d'%objectList['pipe'].index(i))
+        varList.append(i.FFlow)
     for i in objectList['drum']:
-        i.gamma = symbols('GammaDrum')
+        i.gamma = symbols('GammaDrum_i%d'%objectList['drum'].index(i))
         varList.append(i.gamma)
+        i.FFlow = symbols('FFlowDrum_i%d'%objectList['drum'].index(i))
+        varList.append(i.FFlow)
+    # 系统总质量
     MSys = symbols('MSys')
     varList.append(MSys)
+    # 浮筒吃水线
+    objectList['buoy'][0].HeightWaterLine = symbols('BuoyHeightWaterLine')
+    varList.append(objectList['buoy'][0].HeightWaterLine)
+    # 浮筒浮力
+    objectList['buoy'][0].buoyancy = symbols('BuoyFBuoyancy')
+    varList.append(objectList['buoy'][0].buoyancy)
+    ####################################################################
     FBuoyancysystem = symbols('FBuoyancySystem')
     varList.append(FBuoyancysystem)
     FChainend = symbols('FChainend')
@@ -138,25 +153,33 @@ if __name__ == '__main__':
     varList.append(AngleBeta)
     FPipeLastDrum = symbols('FPipeLastDrum')
     varList.append(FPipeLastDrum)
+    # print(varList)
+
 
     # 计算队列
     calcList = \
         [
             MSys*sysInfo.gravityRate-FBuoyancysystem-FChainend *
             cos(objectList['chain'][-1].gamma),
-
             FWindBuoy+FFlowSystem-FChainend*sin(objectList['chain'][-1].gamma),
-
             FBuoyancyBuoy-sysInfo.rhoWater*sysInfo.gravityRate*pi *
             (objectList['buoy'][0].R)**2 *
             objectList['buoy'][0].HeightWaterLine,
-
             FWindBuoy-sign(sysInfo.WindSpeed)*0.625*2 *
             objectList['buoy'][0].R**(objectList['buoy'][0].H-objectList['buoy']
                                       [0].HeightWaterLine)*sysInfo.WindSpeed**2,
-
             FFlowBuoy-sign(sysInfo.WaterSpeed)*374 *
-            sysInfo.WaterSpeed**2*2*objectList['buoy'][0].R*objectList.['buoy'][0].HeightWaterLine,
-
-            
+            sysInfo.WaterSpeed**2*2 *
+            objectList['buoy'][0].R*objectList['buoy'][0].HeightWaterLine,
+            FFlowDrum -374*sysInfo.WaterSpeed**2*objectList['drum'][0].R*cos(objectList['drum'][0].gamma),
         ]
+    # 水流产生的力
+    for key in objectList:
+        for x in objectList[key]:
+            calcList.append(x.FFlow-374*sysInfo.WaterSpeed**2*x.R*x.H*cos(x.gamma))
+    # 浮力,其他节点的计算在初始化时已经完成，浮筒此处覆盖
+    objectList['Buoy'][0].FFlow
+    
+    for i in calcList:
+        print(i)
+
