@@ -2,6 +2,44 @@ from data import Data
 from node import SysInfo
 import node
 from sympy import symbols,solve,sin,cos,pi
+
+def findUpper(objectList,item):
+    for key in objectList:
+        for x in objectList[key]:
+            if item in x:
+                p = x.index(item)
+                if p>0:
+                    return x[p-1]
+                else:
+                    if key =='buoy':
+                        return None
+                    elif key=='pipe':
+                        return objectList['buoy'][-1]
+                    elif key =='drum':
+                        return objectList['pipe'][-1]
+                    elif key =='chain':
+                        return objectList['drum'][-1]
+                    else:
+                        raise(Exception('Not in system.'))
+def findLower(objectList,item):
+    for key in objectList:
+        for x in objectList[key]:
+            if item in x:
+                p = x.index(item)
+                if p<len(x)-1:
+                    return x[p+1]
+                else:
+                    if key == 'bouy':
+                        return objectList['pipe'][0]
+                    elif key == 'pipe':
+                        return objectList['drum'][0]
+                    elif key =='drum':
+                        return objectList['chain'][0]
+                    elif key == 'chain':
+                        return None
+
+
+
 if __name__ == '__main__':
     # 共有变量
     sysInfo = SysInfo()
@@ -15,15 +53,24 @@ if __name__ == '__main__':
         chain.append(node.Chain(node=data.chain))
     drums = [node.Drums(node=data.drums)]
     buoy = [node.Buoy(node=data.buoy)]
-    objectList['pipe'] = pipe
-    objectList['drums'] = drums
-    objectList['chain'] = chain
     objectList['buoy'] = buoy
-    for i in objectList:
-        print(objectList[i])
+    objectList['pipe'] = pipe
+    objectList['drum'] = drums
+    objectList['chain'] = chain
+    # for i in objectList:
+    #     print(objectList[i])
     # 未知数队列
     varList = list()
     # 计算式
+    for i in objectList['chain']:
+        i.gamma = symbols('GammaChainNode')
+        varList.append(i.gamma)
+    for i in objectList['pipe']:
+        i.gamma = symbols('GammaPipe')
+        varList.append(i.gamma)
+    for i in objectList['drum']:
+        i.gamma = symbols('GammaDrum')
+        varList.append(i.gamma)
     MSys = symbols('MSys')
     varList.append(MSys)
     FBuoyancysystem = symbols('FBuoyancySystem')
@@ -88,21 +135,13 @@ if __name__ == '__main__':
     varList.append(AngleBeta)
     FPipeLastDrum = symbols('FPipeLastDrum')
     varList.append(FPipeLastDrum)
-    for i in objectList['Chain']:
-        i.gamma = symbols('GammaChainNode')
-        varList.append(i.gamma)
-    for i in objectList['Pipe']:
-        i.gamma = symbols('GammaPipe')
-        varList.append(i.gamma)
-    for i in objectList['Drum']:
-        i.gamma = symbols('GammaDrum')
-        varList.append(i.gamma)
+
     # 计算队列
     calcList = \
         [
             FBuoyancysystem - FChainend *
-            sin(GammaLast)-MSys*sysInfo.gravityRate,
-            FWindBuoy+FFlowSystem-FChainend*sin(GammaLast),
+            sin(objectList['chain'][-1].gamma)-MSys*sysInfo.gravityRate,
+            FWindBuoy+FFlowSystem-FChainend*sin(objectList['chain'][-1].gamma),
 
 
         ]
