@@ -201,15 +201,22 @@ if __name__ == '__main__':
         # 浮标高度特殊
         if key == 'buoy':
             for x in objectList[key]:
-                calcList.append(x.FFlow-374*sysInfo.WaterSpeed **
-                                2*x.R*x.HeightWaterLine*cos(x.gamma))
+                calcList.append(
+                    x.FFlow-374*sysInfo.WaterSpeed **
+                    2 * x.R * x.HeightWaterLine * cos(x.gamma)
+                )
         else:
             for x in objectList[key]:
-                calcList.append(x.FFlow-374*sysInfo.WaterSpeed **
-                                2*x.R*x.H*cos(x.gamma))
+                calcList.append(
+                    x.FFlow-374*sysInfo.WaterSpeed ** 2 *
+                    x.R * x.H * cos(x.gamma)
+                )
     # 浮力,其他节点的计算在初始化时已经完成，浮筒此处覆盖
-    calcList.append(-objectList['buoy'][0].buoyancy+sysInfo.rhoWater *
-                    sysInfo.gravityRate*pi*objectList['buoy'][0].R**2*objectList['buoy'][0].HeightWaterLine)
+    calcList.append(
+        -objectList['buoy'][0].buoyancy+sysInfo.rhoWater *
+        sysInfo.gravityRate * pi *
+        objectList['buoy'][0].R ** 2 * objectList['buoy'][0].HeightWaterLine
+    )
     # 节点牛顿第三定律受力方程
     for key in objectList:
         if key == 'buoy':
@@ -217,17 +224,41 @@ if __name__ == '__main__':
                 calcList.append(x.Falpha)
         else:
             for x in objectList[key]:
-                calcList.append(x.Falpha - findUpper(objectList, x).Fbeta)
+                calcList.append(
+                    x.Falpha - findUpper(objectList, x).Fbeta
+                )
     # 节点力矩方程
     for key in objectList:
         if key == 'buoy':
             continue
         else:
             for x in objectList[key]:
-                calcList.append(x.Fbeta*sin(x.beta)-x.Falpha*sin(x.alpha))
-                calcList.append(x.Fbeta*sin(x.beta)+x.Falpha*sin(x.alpha)*sin(x.gamma)-x.M*sysInfo.gravityRate*sin(x.gamma)-x.FFlow*cos(x.gamma))
-                calcList.append(x.Fbeta)
+                calcList.append(
+                    x.Fbeta * sin(x.beta) - x.Falpha * sin(x.alpha)
+                )
+                calcList.append(
+                    x.Fbeta*sin(x.beta)+x.Falpha*sin(x.alpha)*sin(x.gamma) -
+                    x.M * sysInfo.gravityRate *
+                    sin(x.gamma) - x.FFlow * cos(x.gamma)
+                )
+                calcList.append(
+                    x.Fbeta*cos(x.beta)+(x.M*sysInfo.gravityRate)
+                    * cos(x.gamma) - x.FFlow * sin(x.gamma) - x.Falpha * cos(x.alpha)
+                )
+    # 钢桶系统
+    calcList.append(
+        objectList['drum'][0].Falpha*sin(objectList['drum'][0].alpha) -
+        objectList['drum'][0].M*sin(objectList['drum'][0].beta)
+    )
+    calcList.append(
+        objectList['drum'][0].Falpha *
+        sin(objectList['drum'][0].alpha) +
+        objectList['drum'][0].buoyancy*sin(objectList['drum'][0].gamma)+objectList['drum'][0].Fbeta*sin(
+            objectList['drum'][0].beta)-(objectList['drum'][0].M+objectList['drum'][0].MBall)*sysInfo.gravityRate*cos(objectList['drum'][0].gamma)-objectList['drum'][0].Fbeta*cos(objectList['drum'][0].beta)
+    )
+    calcList.append(
 
+    )
 
     for i in calcList:
         print(i)
