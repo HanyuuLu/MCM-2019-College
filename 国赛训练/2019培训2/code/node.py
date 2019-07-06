@@ -34,7 +34,7 @@ class Node(SysInfo):
         # 系统重力
         self.gravity = self.gravityRate*self.M
         # 上位结点的力
-        self.Falha = 0
+        self.Falpha = 0
         # 下位结点的力
         self.Fbeta = 0
         # 上位结点的力
