@@ -6,13 +6,15 @@ class SysInfo:
     def __init__(self, **kwargs):
         super().__init__()
         # 水的密度
-        self.thoWater = 1.025e3
+        self.rhoWater = 1.025e3
         # 水深
         self.WaterDeepth = 18
         # 重力系数
         self.gravityRate = 9.8
         # 风速
         self.WindSpeed = 12
+        # 水速
+        self.WaterSpeed = 0
 
 
 # 节点基类

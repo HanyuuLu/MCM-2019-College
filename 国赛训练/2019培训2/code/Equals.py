@@ -1,43 +1,46 @@
+from sympy import cos, pi, sin, solve, symbols, sign
+
+import node
 from data import Data
 from node import SysInfo
-import node
-from sympy import symbols,solve,sin,cos,pi
 
-def findUpper(objectList,item):
+
+def findUpper(objectList, item):
     for key in objectList:
         for x in objectList[key]:
             if item in x:
                 p = x.index(item)
-                if p>0:
+                if p > 0:
                     return x[p-1]
                 else:
-                    if key =='buoy':
+                    if key == 'buoy':
                         return None
-                    elif key=='pipe':
+                    elif key == 'pipe':
                         return objectList['buoy'][-1]
-                    elif key =='drum':
+                    elif key == 'drum':
                         return objectList['pipe'][-1]
-                    elif key =='chain':
+                    elif key == 'chain':
                         return objectList['drum'][-1]
                     else:
                         raise(Exception('Not in system.'))
-def findLower(objectList,item):
+
+
+def findLower(objectList, item):
     for key in objectList:
         for x in objectList[key]:
             if item in x:
                 p = x.index(item)
-                if p<len(x)-1:
+                if p < len(x)-1:
                     return x[p+1]
                 else:
                     if key == 'bouy':
                         return objectList['pipe'][0]
                     elif key == 'pipe':
                         return objectList['drum'][0]
-                    elif key =='drum':
+                    elif key == 'drum':
                         return objectList['chain'][0]
                     elif key == 'chain':
                         return None
-
 
 
 if __name__ == '__main__':
@@ -139,11 +142,21 @@ if __name__ == '__main__':
     # 计算队列
     calcList = \
         [
-            FBuoyancysystem - FChainend *
-            sin(objectList['chain'][-1].gamma)-MSys*sysInfo.gravityRate,
+            MSys*sysInfo.gravityRate-FBuoyancysystem-FChainend *
+            cos(objectList['chain'][-1].gamma),
+
             FWindBuoy+FFlowSystem-FChainend*sin(objectList['chain'][-1].gamma),
 
+            FBuoyancyBuoy-sysInfo.rhoWater*sysInfo.gravityRate*pi *
+            (objectList['buoy'][0].R)**2 *
+            objectList['buoy'][0].HeightWaterLine,
 
+            FWindBuoy-sign(sysInfo.WindSpeed)*0.625*2 *
+            objectList['buoy'][0].R**(objectList['buoy'][0].H-objectList['buoy']
+                                      [0].HeightWaterLine)*sysInfo.WindSpeed**2,
+
+            FFlowBuoy-sign(sysInfo.WaterSpeed)*374 *
+            sysInfo.WaterSpeed**2*2*objectList['buoy'][0].R*objectList.['buoy'][0].HeightWaterLine,
+
+            
         ]
-
-
