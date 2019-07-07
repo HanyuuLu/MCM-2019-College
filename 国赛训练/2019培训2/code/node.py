@@ -6,13 +6,15 @@ class SysInfo:
     def __init__(self, **kwargs):
         super().__init__()
         # 水的密度
-        self.thoWater = 1.025e3
+        self.rhoWater = 1.025e3
         # 水深
         self.WaterDeepth = 18
         # 重力系数
         self.gravityRate = 9.8
         # 风速
         self.WindSpeed = 12
+        # 水速
+        self.WaterSpeed = 0
 
 
 # 节点基类
@@ -32,9 +34,15 @@ class Node(SysInfo):
         # 系统重力
         self.gravity = self.gravityRate*self.M
         # 上位结点的力
+        self.Falpha = 0
+        # 下位结点的力
+        self.Fbeta = 0
+        # 上位结点的力
         self.alpha = 0
         # 下位结点的力
         self.beta = 0
+        # 水流的力
+        self.FFlow = 0
 
 
 # 链结
