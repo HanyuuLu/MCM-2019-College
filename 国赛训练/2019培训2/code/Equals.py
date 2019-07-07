@@ -7,40 +7,38 @@ from node import SysInfo
 
 def findUpper(objectList, item):
     for key in objectList:
-        for x in objectList[key]:
-            if item in x:
-                p = x.index(item)
-                if p > 0:
-                    return x[p-1]
+        if item in objectList[key]:
+            p = objectList[key].index(item)
+            if p > 0:
+                return objectList[key][p-1]
+            else:
+                if key == 'buoy':
+                    return None
+                elif key == 'pipe':
+                    return objectList['buoy'][-1]
+                elif key == 'drum':
+                    return objectList['pipe'][-1]
+                elif key == 'chain':
+                    return objectList['drum'][-1]
                 else:
-                    if key == 'buoy':
-                        return None
-                    elif key == 'pipe':
-                        return objectList['buoy'][-1]
-                    elif key == 'drum':
-                        return objectList['pipe'][-1]
-                    elif key == 'chain':
-                        return objectList['drum'][-1]
-                    else:
-                        raise(Exception('Not in system.'))
+                    raise(Exception('Not in system.'))
 
 
 def findLower(objectList, item):
     for key in objectList:
-        for x in objectList[key]:
-            if item in x:
-                p = x.index(item)
-                if p < len(x)-1:
-                    return x[p+1]
-                else:
-                    if key == 'buoy':
-                        return objectList['pipe'][0]
-                    elif key == 'pipe':
-                        return objectList['drum'][0]
-                    elif key == 'drum':
-                        return objectList['chain'][0]
-                    elif key == 'chain':
-                        return None
+        if item in objectList[key]:
+            p = objectList[key].index(item)
+            if p < len(objectList[key])-1:
+                return objectList[key][p+1]
+            else:
+                if key == 'buoy':
+                    return objectList['pipe'][0]
+                elif key == 'pipe':
+                    return objectList['drum'][0]
+                elif key == 'drum':
+                    return objectList['chain'][0]
+                elif key == 'chain':
+                    return None
 
 
 if __name__ == '__main__':
@@ -114,6 +112,9 @@ if __name__ == '__main__':
     # 浮筒浮力
     objectList['buoy'][0].buoyancy = symbols('BuoyFBuoyancy')
     varList.append(objectList['buoy'][0].buoyancy)
+    # 游动半径
+    activityR = symbols('ActivityR')
+    varList.append(activityR)
     ####################################################################
     FBuoyancysystem = symbols('FBuoyancySystem')
     varList.append(FBuoyancysystem)
@@ -257,8 +258,31 @@ if __name__ == '__main__':
             objectList['drum'][0].beta)-(objectList['drum'][0].M+objectList['drum'][0].MBall)*sysInfo.gravityRate*cos(objectList['drum'][0].gamma)-objectList['drum'][0].Fbeta*cos(objectList['drum'][0].beta)
     )
     calcList.append(
-
+            objectList['drum'][0].Falpha*cos(objectList['drum'][0].alpha)+objectList['drum'][0].buoyancy*cos(objectList['drum'][0].gamma)+objectList['drum'][0].FFlow*sin(objectList['drum'][0].gamma)-(objectList['drum'][0].M+objectList['drum'][0].MBall)*sysInfo.gravityRate*cos(objectList['drum'][0].gamma)-objectList['drum'][0].Fbeta*cos(objectList['drum'][0].beta)
     )
-
+    # 水深公式
+    ds = 0
+    for key in objectList:
+        if key=='buoy':
+            for i in objectList[key]:
+                ds+=i.HeightWaterLine
+        else:
+            for i in objectList[key]:
+                ds+=i.H
+    calcList.append(
+        ds-sysInfo.WaterDeepth
+    )
+    expR = 0
+    for key in objectList:
+        for i in objectList[key]:
+            expR+=i.H*sin(i.gamma)
+    expR+=objectList['buoy'][0].R
+    calcList.append(
+        activityR-expR
+    )
     for i in calcList:
         print(i)
+    result = solve(calcList,varList)
+    print(result)
+    with open('res.txt', 'w') as printer:
+        printer.write(str(result))
