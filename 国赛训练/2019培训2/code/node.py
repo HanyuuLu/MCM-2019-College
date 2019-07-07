@@ -56,7 +56,8 @@ class Buoy(Node):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.HeightWaterLine = 0
-        self.buoyancy = math.pi * self.R ** 2 * self.HeightWaterLine
+        self.buoyancy = 0
+        self.FWind = 0
 
 
 # 钢桶

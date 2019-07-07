@@ -3,7 +3,7 @@ from sympy import cos, pi, sin, solve, symbols, sign
 import node
 from data import Data
 from node import SysInfo
-
+import sys
 
 def findUpper(objectList, item):
     for key in objectList:
@@ -42,6 +42,7 @@ def findLower(objectList, item):
 
 
 if __name__ == '__main__':
+    sys.setrecursionlimit(int(1e6))
     # 共有变量
     sysInfo = SysInfo()
     objectList = dict()
@@ -104,8 +105,10 @@ if __name__ == '__main__':
         i.beta = symbols('betaDrumNode_%d' % objectList['drum'].index(i))
         varList.append(i.beta)
     # 系统总质量
-    MSys = symbols('MSys')
-    varList.append(MSys)
+    MSys = 0
+    for key in objectList:
+        for x in objectList[key]:
+            MSys += x.M
     # 浮筒吃水线
     objectList['buoy'][0].HeightWaterLine = symbols('BuoyHeightWaterLine')
     varList.append(objectList['buoy'][0].HeightWaterLine)
@@ -116,16 +119,16 @@ if __name__ == '__main__':
     activityR = symbols('ActivityR')
     varList.append(activityR)
     # ####################################################################
-    FBuoyancysystem = symbols('FBuoyancySystem')
-    varList.append(FBuoyancysystem)
-    FChainend = symbols('FChainend')
-    varList.append('FCsshainend')
-    FWindBuoy = symbols('FWindBuoy')
-    varList.append(FWindBuoy)
+    FBuoyancySystem = symbols('FBuoyancySystem')
+    varList.append(FBuoyancySystem)
+    # FChainend = symbols('FChainend')
+    # varList.append('FCsshainend')
+    objectList['buoy'][0].FWind = symbols('FWindBuoy')
+    varList.append(objectList['buoy'][0].FWind)
     FFlowSystem = symbols('FFlowSystem')
     varList.append(FFlowSystem)
     FBuoyancyBuoy = symbols('FBuoYancyBuoy')
-    varList.append(FBuoyancysystem)
+    # varList.append(FBuoyancySystem)
     # SpeedWind = symbols('SpeedWind')
     # varList.append(SpeedWind)
     # Rbuoy = symbols('Rbuoy')
@@ -184,19 +187,41 @@ if __name__ == '__main__':
     calcList = \
         [
             # 系统受力
-            MSys*sysInfo.gravityRate-FBuoyancysystem-FChainend *
+            MSys*sysInfo.gravityRate-FBuoyancySystem-objectList['chain'][-1].Fbeta *
             cos(objectList['chain'][-1].gamma),
             # 系统受力
-            FWindBuoy+FFlowSystem-FChainend*sin(objectList['chain'][-1].gamma),
+            objectList['buoy'][0].FWind+FFlowSystem - \
+            objectList['chain'][-1].Fbeta*sin(objectList['chain'][-1].gamma),
             # 浮标受力
             FBuoyancyBuoy-sysInfo.rhoWater*sysInfo.gravityRate*pi *
             (objectList['buoy'][0].R)**2 *
             objectList['buoy'][0].HeightWaterLine,
             # 浮标风力
-            FWindBuoy-sign(sysInfo.WindSpeed)*0.625*2 *
-            objectList['buoy'][0].R**(objectList['buoy'][0].H-objectList['buoy']
-                                      [0].HeightWaterLine)*sysInfo.WindSpeed**2
+            objectList['buoy'][0].FWind-sign(sysInfo.WindSpeed)*0.625*2 *
+            objectList['buoy'][0].R*(objectList['buoy'][0].H-objectList['buoy']
+                                     [0].HeightWaterLine)*sysInfo.WindSpeed**2
         ]
+    tempB = 0
+    tempW = 0
+    # 系统浮力，水流的力的方程
+    for key in objectList:
+        if key == 'buoy':
+            for x in objectList[key]:
+                tempB += x.R ** 2 * x.HeightWaterLine
+                tempW += x.R*x.HeightWaterLine
+        else:
+            for x in objectList[key]:
+                tempB += x.R ** 2 * x.H
+                tempW += x.R*x.H*cos(x.gamma)
+    tempB *= sysInfo.rhoWater * sysInfo.gravityRate * pi
+    tempW *= sign(sysInfo.WaterSpeed)*374*sysInfo.WaterSpeed**2*2
+    calcList.append(
+        tempB - FBuoyancySystem
+    )
+    calcList.append(
+        tempW - FFlowSystem
+    )
+
     # 所有节点受到水流产生的力
     for key in objectList:
         # 浮标高度特殊
