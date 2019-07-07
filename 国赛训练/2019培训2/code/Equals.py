@@ -115,7 +115,7 @@ if __name__ == '__main__':
     # 游动半径
     activityR = symbols('ActivityR')
     varList.append(activityR)
-    ####################################################################
+    # ####################################################################
     FBuoyancysystem = symbols('FBuoyancySystem')
     varList.append(FBuoyancysystem)
     FChainend = symbols('FChainend')
@@ -126,59 +126,59 @@ if __name__ == '__main__':
     varList.append(FFlowSystem)
     FBuoyancyBuoy = symbols('FBuoYancyBuoy')
     varList.append(FBuoyancysystem)
-    SpeedWind = symbols('SpeedWind')
-    varList.append(SpeedWind)
-    Rbuoy = symbols('Rbuoy')
-    varList.append('Rbuoy')
-    HBuoy = symbols('HBuoy')
-    varList.append(HBuoy)
-    FFlowBuoy = symbols('FFlowBuoy')
-    varList.append(FFlowBuoy)
-    SpeedWater = symbols('SpeedWater')
-    varList.append(SpeedWater)
-    FFlowDrum = symbols('FFlowDrum')
-    varList.append(FFlowDrum)
-    RDrums = symbols('RDrums')
-    varList.append(RDrums)
-    HDrums = symbols('HDrums')
-    varList.append(HDrums)
-    FFlowPipe = symbols('FFlowPipe')
-    varList.append(FFlowPipe)
-    RPipe = symbols('RPipe')
-    varList.append(RPipe)
-    HPipe = symbols('HPipe')
-    varList.append(HPipe)
-    FBuoyancyDrum = symbols('FBuoyancyDrum')
-    varList.append(FBuoyancyDrum)
-    FBuoyancyPipe = symbols('FBuoyancyPipe')
-    varList.append(FBuoyancyPipe)
-    MBuoy = symbols('MBuoy')
-    varList.append(MBuoy)
-    FBuoyPipe = symbols('FBuoyPipe')
-    varList.append(FBuoyPipe)
-    AngleAlphaPipeBuoy = symbols('AngleAlphaPipeBuoy')
-    varList.append(AngleAlphaPipeBuoy)
-    FPipeSecondPipeFirst = symbols('FPipeSecondPipeFirst')
-    varList.append(FPipeSecondPipeFirst)
-    AngleBetaPipeFirst = symbols('AngleBetaPipeFirst')
-    varList.append(AngleBetaPipeFirst)
-    FBuoyPipeFirst = symbols('FBuoyPipeFirst')
-    varList.append(FBuoyPipeFirst)
-    AngleAlphaPipeFitst = symbols('AngleAlphaPipeFitst')
-    varList.append(AngleAlphaPipeFitst)
-    FPipeSecondPipefirst = symbols('FPipeSecondPipefirst')
-    varList.append(FPipeSecondPipefirst)
-    FPipeLastDrum = symbols('FPipeLastDrum')
-    varList.append(FPipeLastDrum)
-    AngleAlpha = symbols('AngleAlpha')
-    varList.append(AngleAlpha)
-    FChainDrum = symbols('FChainDrum')
-    varList.append(FChainDrum)
-    AngleBeta = symbols('AngleBeta')
-    varList.append(AngleBeta)
-    FPipeLastDrum = symbols('FPipeLastDrum')
-    varList.append(FPipeLastDrum)
-    # print(varList)
+    # SpeedWind = symbols('SpeedWind')
+    # varList.append(SpeedWind)
+    # Rbuoy = symbols('Rbuoy')
+    # varList.append('Rbuoy')
+    # HBuoy = symbols('HBuoy')
+    # varList.append(HBuoy)
+    # FFlowBuoy = symbols('FFlowBuoy')
+    # varList.append(FFlowBuoy)
+    # SpeedWater = symbols('SpeedWater')
+    # varList.append(SpeedWater)
+    # FFlowDrum = symbols('FFlowDrum')
+    # varList.append(FFlowDrum)
+    # RDrums = symbols('RDrums')
+    # varList.append(RDrums)
+    # HDrums = symbols('HDrums')
+    # varList.append(HDrums)
+    # FFlowPipe = symbols('FFlowPipe')
+    # varList.append(FFlowPipe)
+    # RPipe = symbols('RPipe')
+    # varList.append(RPipe)
+    # HPipe = symbols('HPipe')
+    # varList.append(HPipe)
+    # FBuoyancyDrum = symbols('FBuoyancyDrum')
+    # varList.append(FBuoyancyDrum)
+    # FBuoyancyPipe = symbols('FBuoyancyPipe')
+    # varList.append(FBuoyancyPipe)
+    # MBuoy = symbols('MBuoy')
+    # varList.append(MBuoy)
+    # FBuoyPipe = symbols('FBuoyPipe')
+    # varList.append(FBuoyPipe)
+    # AngleAlphaPipeBuoy = symbols('AngleAlphaPipeBuoy')
+    # varList.append(AngleAlphaPipeBuoy)
+    # FPipeSecondPipeFirst = symbols('FPipeSecondPipeFirst')
+    # varList.append(FPipeSecondPipeFirst)
+    # AngleBetaPipeFirst = symbols('AngleBetaPipeFirst')
+    # varList.append(AngleBetaPipeFirst)
+    # FBuoyPipeFirst = symbols('FBuoyPipeFirst')
+    # varList.append(FBuoyPipeFirst)
+    # AngleAlphaPipeFitst = symbols('AngleAlphaPipeFitst')
+    # varList.append(AngleAlphaPipeFitst)
+    # FPipeSecondPipefirst = symbols('FPipeSecondPipefirst')
+    # varList.append(FPipeSecondPipefirst)
+    # FPipeLastDrum = symbols('FPipeLastDrum')
+    # varList.append(FPipeLastDrum)
+    # AngleAlpha = symbols('AngleAlpha')
+    # varList.append(AngleAlpha)
+    # FChainDrum = symbols('FChainDrum')
+    # varList.append(FChainDrum)
+    # AngleBeta = symbols('AngleBeta')
+    # varList.append(AngleBeta)
+    # FPipeLastDrum = symbols('FPipeLastDrum')
+    # varList.append(FPipeLastDrum)
+    # # print(varList)
 
     # 计算队列
     calcList = \
@@ -258,31 +258,32 @@ if __name__ == '__main__':
             objectList['drum'][0].beta)-(objectList['drum'][0].M+objectList['drum'][0].MBall)*sysInfo.gravityRate*cos(objectList['drum'][0].gamma)-objectList['drum'][0].Fbeta*cos(objectList['drum'][0].beta)
     )
     calcList.append(
-            objectList['drum'][0].Falpha*cos(objectList['drum'][0].alpha)+objectList['drum'][0].buoyancy*cos(objectList['drum'][0].gamma)+objectList['drum'][0].FFlow*sin(objectList['drum'][0].gamma)-(objectList['drum'][0].M+objectList['drum'][0].MBall)*sysInfo.gravityRate*cos(objectList['drum'][0].gamma)-objectList['drum'][0].Fbeta*cos(objectList['drum'][0].beta)
+        objectList['drum'][0].Falpha*cos(objectList['drum'][0].alpha)+objectList['drum'][0].buoyancy*cos(objectList['drum'][0].gamma)+objectList['drum'][0].FFlow*sin(objectList['drum'][0].gamma)-(
+            objectList['drum'][0].M+objectList['drum'][0].MBall)*sysInfo.gravityRate*cos(objectList['drum'][0].gamma)-objectList['drum'][0].Fbeta*cos(objectList['drum'][0].beta)
     )
     # 水深公式
     ds = 0
     for key in objectList:
-        if key=='buoy':
+        if key == 'buoy':
             for i in objectList[key]:
-                ds+=i.HeightWaterLine
+                ds += i.HeightWaterLine
         else:
             for i in objectList[key]:
-                ds+=i.H
+                ds += i.H
     calcList.append(
         ds-sysInfo.WaterDeepth
     )
     expR = 0
     for key in objectList:
         for i in objectList[key]:
-            expR+=i.H*sin(i.gamma)
-    expR+=objectList['buoy'][0].R
+            expR += i.H*sin(i.gamma)
+    expR += objectList['buoy'][0].R
     calcList.append(
         activityR-expR
     )
     for i in calcList:
         print(i)
-    result = solve(calcList,varList)
+    result = solve(calcList, varList)
     print(result)
     with open('res.txt', 'w') as printer:
         printer.write(str(result))
