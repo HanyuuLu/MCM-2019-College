@@ -15,7 +15,7 @@ class InpatientSystem(Const):
         # 更换策略日期
         self.DIVIDED_DATE = datetime(2008, 8, 8)
         # 结束时间
-        self.FINISH_DATE = datetime(2008, 10, 1)
+        self.FINISH_DATE = datetime(2008, 10, 10)
         # 老化门槛
         self.AGING_JUDGING = 10
         # 床位数
@@ -66,14 +66,17 @@ class InpatientSystem(Const):
 
     # 清退当日出院人员
     def checkout(self):
+        temp = 0
         for i in self.bedCurrent:
-            if i != None and i[6] == self.now:
+            if i != None and i[6]!=None and i[6] <= self.now:
                 self.bedHistory[self.bedCurrent.index(i)].append(i)
                 self.changeCountLog[-1] += 1
                 self.bedCurrent[self.bedCurrent.index(i)] = None
-
+                temp+=1
+        print('每日清退人数%d'%temp)
 
     # 安排病房
+
     def checkinIN(self):
         for que in self.waitingQueue:
             for i in que:
@@ -86,26 +89,33 @@ class InpatientSystem(Const):
                             que.index(i)
                         ]
                     )
-                    self.temp+=1
-
+                    self.temp += 1
 
     # 安排病房
+
     def checkin(self):
+        temp  = list()
+        for _ in range(6):
+            temp.append(0)
         for i in self.PRIORITY[self.now.weekday()]:
             que = self.waitingQueue[i]
             while len(que) > 0:
                 emptyRoomNumber = self.allocateBed()
                 if emptyRoomNumber == None:
                     # 没有空床位
+                    print('满')
+                    print(temp)
                     return
                 # 入院
                 self.bedCurrent[emptyRoomNumber] = deepcopy(que[0])
                 self.bedCurrent[emptyRoomNumber][3] = self.now
                 del(que[0])
-                self.temp+=1
+                temp[i]+=1
+                self.temp += 1
 
 
     # 读入数据表记录
+
     def recordIN(self):
         while(self.rawData[0][2] <= self.now):
             for i in range(3, 7):
@@ -118,8 +128,8 @@ class InpatientSystem(Const):
             ].append(deepcopy(self.rawData[0]))
             del(self.rawData[0])
 
-
     # 读入数据表记录
+
     def record(self):
         while(len(self.rawData) > 0 and self.rawData[0][2] <= self.now):
             self.waitingQueue[
@@ -153,6 +163,8 @@ class InpatientSystem(Const):
 
     def operation(self):
         for i in self.bedCurrent:
+            if i==None:
+                continue
             # 未安排手术
             if i[4] == None:
                 # 白内障系列
@@ -180,6 +192,8 @@ class InpatientSystem(Const):
 
     def recover(self):
         for i in self.bedCurrent:
+            if i ==None:
+                continue
             if i[6] == None:
                 if i[1] != self.DISEASE[1]:
                     i[6] = i[4]+timedelta(
@@ -192,6 +206,18 @@ class InpatientSystem(Const):
                             ]+1
                         )
                     )
+                else:
+                    i[6] = i[5]+timedelta(
+                        randint(
+                            self.recoverTime[
+                                self.DISEASE.index(i[1])
+                            ],
+                            self.recoverTime[
+                                self.DISEASE.index(i[1])
+                            ]+1
+                        )
+                    )
+
     # 初始化
 
     def initialize(self):
@@ -204,7 +230,7 @@ class InpatientSystem(Const):
             # 读入数据表记录
             self.recordIN()
             # 安排住院
-            self.checkin()
+            self.checkinIN()
             print(
                 self.now, self.WEEKDAY[self.now.weekday()], self.changeCountLog[-1])
 
