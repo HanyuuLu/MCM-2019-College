@@ -1,10 +1,12 @@
 from dataReader import dataReader
 import datetime
 from draw import draw
+from copy import deepcopy
 
 
 class Const:
     def __init__(self):
+        self.WEEKDAY = ('周一', '周二', '周三', '周四', '周五', '周六', '周日')
         self.LABEL = [
             '序号',  # 0
             '类型',  # 1
@@ -21,6 +23,8 @@ class Const:
             '青光眼',  # 3
             '外伤'  # 4
         ]
+        self.WAITING_QUEUE_TYPE = deepcopy(self.DISEASE)
+        self.WAITING_QUEUE_TYPE.append('Aging')
 
 
 class Calc:
