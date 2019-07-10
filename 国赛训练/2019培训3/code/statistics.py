@@ -120,7 +120,7 @@ class Calc:
         return(res)
 
     def peopleAwaitOperation(self):
-        self.ao = [0,0]
+        self.ao = [0, 0]
         for sheet in self.data:
             for i in sheet:
                 try:
@@ -133,7 +133,7 @@ class Calc:
         return(res)
 
     def peoplePrepOperation(self):
-        self.ao = [0,0]
+        self.ao = [0, 0]
         for sheet in self.data:
             for i in sheet:
                 try:
@@ -146,7 +146,7 @@ class Calc:
         return(res)
 
     def transRate(self):
-        self.ao = [0,0]
+        self.ao = [0, 0]
         for sheet in self.data:
             for i in sheet:
                 try:
@@ -167,4 +167,4 @@ if __name__ == '__main__':
     print('病床周转率（平均从到出院的时间的倒数的平均值）')
     # for i in range(5):
     #     print('%s\t%.2f 天'%(const.DISEASE[i],(s[i])))
-    print('%.2f人次/天'%s[0])
+    print('%.2f人次/天' % s[0])
