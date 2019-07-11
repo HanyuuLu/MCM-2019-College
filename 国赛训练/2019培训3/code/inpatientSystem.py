@@ -1,9 +1,10 @@
 ﻿from datetime import datetime, timedelta
-from dataReader import dataReader
-from statistics import Const
 from copy import deepcopy
-from random import randint
 from math import e as E
+from random import randint
+from statistics import Const
+
+from dataReader import dataReader
 
 
 class InpatientSystem(Const):
@@ -59,6 +60,8 @@ class InpatientSystem(Const):
         )
         # 平均恢复时间（范围再加1天，此处为下限）
         self.recoverTime = (2, 2, 10, 8, 6)
+        # 周末是否手术
+        self.WORK_ON_WEEKEND = False
 
         # self.temp = 0
 
@@ -188,12 +191,22 @@ class InpatientSystem(Const):
                 # 外伤
                 elif i[1] == self.DISEASE[4]:
                     i[4] = i[3]+timedelta(days=1)
+                    if not self.WORK_ON_WEEKEND:
+                        if i[4].weekday() == 5:
+                            i[4] += timedelta(days=3)
+                        elif i[4].weekday() == 6:
+                            i[4] += timedelta(days=2)
                 # 其他疾病
                 else:
                     limit = randint(2, 3)
                     i[4] = i[3]+timedelta(days=limit)
                     if i[4].weekday() == 0 or i[4].weekday() == 2:
                         i[4] += timedelta(days=1)
+                    if not self.WORK_ON_WEEKEND:
+                        if i[4].weekday() == 5:
+                            i[4] += timedelta(days=3)
+                        elif i[4].weekday() == 6:
+                            i[4] += timedelta(days=2)
     # 术后恢复
 
     def recover(self):
@@ -243,11 +256,6 @@ class InpatientSystem(Const):
     def update(self):
         while self.now <= self.FINISH_DATE:
             self.now += timedelta(days=1)
-            ##########################
-            if self.now == self.FINSIH_RATE_DATE:
-                for i in self.waitingQueue:
-                    print(len(i))
-            ##########################
             # print(self.now)
             # 换人病床统计数添加计数
             self.changeCountLog.append(0)
@@ -286,6 +294,7 @@ class InpatientSystem(Const):
             1.00
         )
         sum = 0
+        sumSat = 0
         sumList = list()
         conList = list()
         for _ in range(len(self.DISEASE)):
@@ -293,22 +302,22 @@ class InpatientSystem(Const):
             conList.append(0)
         for bed in self.bedHistory:
             for i in bed:
-                res = sigmoid(
-                    (i[4]-i[3]).days,
-                    avg[self.DISEASE.index(i[1])],
-                    4
-                    )
-                sum += res
+                delta = (i[4]-i[3]).days
+                res = sigmoid(delta, avg[self.DISEASE.index(i[1])], 4)
+                sumSat += res
+                sum += delta
                 key = self.DISEASE.index(i[1])
-                sumList[key] += res
+                sumList[key] += delta
                 conList[key] += 1
         for i in range(len(self.DISEASE)):
             sumList[i] /= conList[i]
         sum /= self.SUM_PATIENT
+        sumSat /= self.SUM_PATIENT
         print('平均准备时间\t', sum)
+        print('准备时间满意度\t', sumSat)
         for i in range(len(self.DISEASE)):
             print('\t', self.DISEASE[i], '\t', sumList[i])
-        return sum
+        return sumSat
 
     # 评估等待时间满意度
     def evaluateWait(self):
@@ -320,6 +329,7 @@ class InpatientSystem(Const):
             1.00
         )
         sum = 0
+        sumSat = 0
         sumList = list()
         conList = list()
         for _ in range(len(self.DISEASE)):
@@ -327,22 +337,22 @@ class InpatientSystem(Const):
             conList.append(0)
         for bed in self.bedHistory:
             for i in bed:
-                res = sigmoid((
-                    i[3]-i[2]).days,
-                    avg[self.DISEASE.index(i[1])],
-                    3
-                )
-                sum += res
+                delta = (i[3]-i[2]).days
+                res = sigmoid(delta, avg[self.DISEASE.index(i[1])], 2)
+                sumSat += res
+                sum += delta
                 key = self.DISEASE.index(i[1])
-                sumList[key] += res
+                sumList[key] += delta
                 conList[key] += 1
         for i in range(len(self.DISEASE)):
             sumList[i] /= conList[i]
         sum /= self.SUM_PATIENT
+        sumSat /= self.SUM_PATIENT
         print('平均等待时间\t', sum)
+        print('等待时间满意度\t', sumSat)
         for i in range(len(self.DISEASE)):
             print('\t', self.DISEASE[i], '\t', sumList[i])
-        return sum
+        return sumSat
 
     # 病房使用率
     def bedUsedRate(self):
@@ -427,6 +437,4 @@ if __name__ == '__main__':
         scoreList.append(inpatientSystem.score())
     for i in range(len(x)):
         print(x[i], scoreList[i])
-
-    # print(inpatientSystem.temp)
     pass
