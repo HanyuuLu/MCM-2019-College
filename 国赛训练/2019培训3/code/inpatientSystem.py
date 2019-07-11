@@ -55,25 +55,25 @@ class InpatientSystem(Const):
         # 平均恢复时间（范围再加1天，此处为下限）
         self.recoverTime = (2, 2, 10, 8, 6)
 
-        self.temp = 0
+        # self.temp = 0
 
     # 分配床位号
     def allocateBed(self):
         for i in range(len(self.bedCurrent)):
-            if self.bedCurrent[i] == None:
+            if self.bedCurrent[i] is None:
                 return i
         return None
 
     # 清退当日出院人员
     def checkout(self):
-        temp = 0
+        # temp = 0
         for i in self.bedCurrent:
-            if i != None and i[6]!=None and i[6] <= self.now:
+            if i is not None and i[6] is not None and i[6] <= self.now:
                 self.bedHistory[self.bedCurrent.index(i)].append(i)
                 self.changeCountLog[-1] += 1
                 self.bedCurrent[self.bedCurrent.index(i)] = None
-                temp+=1
-        print('每日清退人数%d'%temp)
+                # temp+=1
+        # print('每日清退人数%d'%temp)
 
     # 安排病房
 
@@ -89,37 +89,37 @@ class InpatientSystem(Const):
                             que.index(i)
                         ]
                     )
-                    self.temp += 1
+                    # self.temp += 1
 
     # 安排病房
 
     def checkin(self):
-        temp  = list()
-        for _ in range(6):
-            temp.append(0)
+        # temp  = list()
+        # for _ in range(6):
+        #     temp.append(0)
         for i in self.PRIORITY[self.now.weekday()]:
             que = self.waitingQueue[i]
             while len(que) > 0:
                 emptyRoomNumber = self.allocateBed()
-                if emptyRoomNumber == None:
+                if emptyRoomNumber is None:
                     # 没有空床位
-                    print('满')
-                    print(temp)
+                    # print('满')
+                    # print(temp)
                     return
                 # 入院
                 self.bedCurrent[emptyRoomNumber] = deepcopy(que[0])
                 self.bedCurrent[emptyRoomNumber][3] = self.now
                 del(que[0])
-                temp[i]+=1
-                self.temp += 1
-
+                # temp[i]+=1
+                # self.temp += 1
 
     # 读入数据表记录
 
     def recordIN(self):
         while(self.rawData[0][2] <= self.now):
             for i in range(3, 7):
-                if self.rawData[0][i] != None and self.rawData[0][i] > self.DIVIDED_DATE:
+                if self.rawData[0][i] is not None and \
+                        self.rawData[0][i] > self.DIVIDED_DATE:
                     self.rawData[0][i] = None
             self.waitingQueue[
                 self.WAITING_QUEUE_TYPE.index(
@@ -163,10 +163,10 @@ class InpatientSystem(Const):
 
     def operation(self):
         for i in self.bedCurrent:
-            if i==None:
+            if i is None:
                 continue
             # 未安排手术
-            if i[4] == None:
+            if i[4] is None:
                 # 白内障系列
                 if i[1] == self.DISEASE[0]:
                     limit = randint(1, 2)
@@ -192,9 +192,9 @@ class InpatientSystem(Const):
 
     def recover(self):
         for i in self.bedCurrent:
-            if i ==None:
+            if i is None:
                 continue
-            if i[6] == None:
+            if i[6] is None:
                 if i[1] != self.DISEASE[1]:
                     i[6] = i[4]+timedelta(
                         randint(
@@ -232,7 +232,9 @@ class InpatientSystem(Const):
             # 安排住院
             self.checkinIN()
             print(
-                self.now, self.WEEKDAY[self.now.weekday()], self.changeCountLog[-1])
+                self.now,
+                self.WEEKDAY[self.now.weekday()], self.changeCountLog[-1]
+            )
 
     def update(self):
         while self.now <= self.FINISH_DATE:
@@ -252,7 +254,10 @@ class InpatientSystem(Const):
             # 术后恢复
             self.recover()
             print(
-                self.now, self.WEEKDAY[self.now.weekday()], self.changeCountLog[-1])
+                self.now,
+                self.WEEKDAY[self.now.weekday()],
+                self.changeCountLog[-1]
+            )
 
     def test(self):
         self.initialize()
@@ -262,5 +267,5 @@ class InpatientSystem(Const):
 if __name__ == '__main__':
     inpatientSystem = InpatientSystem()
     inpatientSystem.test()
-    print(inpatientSystem.temp)
+    # print(inpatientSystem.temp)
     pass

@@ -1,6 +1,7 @@
 ﻿import xlrd
 import sys
-import datetime
+# import datetime
+
 
 def dataConverter(src: list)->list:
     res = list()
@@ -19,7 +20,7 @@ def dataReader():
     try:
         fileName = sys.argv[-1]
         print('[fileName]%s' % fileName)
-    except:
+    except Exception:
         print('no file name')
     data = list()
     try:
@@ -33,7 +34,7 @@ def dataReader():
                 if temp[0] == '序号':
                     continue
                 data[i].append(dataConverter(temp))
-    except:
+    except Exception:
         print('bad data file')
     # for i in data:
     #     for x in i:

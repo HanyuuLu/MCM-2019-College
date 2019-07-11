@@ -1,6 +1,6 @@
 from dataReader import dataReader
 import datetime
-from draw import draw
+# from draw import draw
 from copy import deepcopy
 
 
@@ -54,9 +54,9 @@ class Calc:
             self.out.append(0)
         for sheet in self.data:
             for i in sheet:
-                if i[3] != None:
+                if i[3] is not None:
                     self.come[(i[3]-self.dateBase).days] += 1
-                if i[6] != None:
+                if i[6] is not None:
                     self.out[(i[6]-self.dateBase).days] += 1
         return [self.come, self.out]
 
