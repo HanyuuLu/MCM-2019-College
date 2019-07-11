@@ -284,7 +284,6 @@ class InpatientSystem(Const):
         return sum
 
     # 评估准备时间满意度
-
     def evaluatePrep(self):
         avg = (
             2.38,
@@ -414,7 +413,7 @@ class InpatientSystem(Const):
         tmp += 0.5*self.evaluateWait()
         tmp += 0.1*self.evaluatePrep()
         tmp += 0.1*self.bedUsedRate()
-        print('score%f' % tmp)
+        print('score\t%f' % tmp)
         return tmp
 
 # 满意度sigmoid变种函数

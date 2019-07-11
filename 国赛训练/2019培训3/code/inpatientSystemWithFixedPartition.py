@@ -8,30 +8,46 @@ from dataReader import dataReader
 from inpatientSystem import InpatientSystem
 
 
-class InpatientSystemWithFixedPartion(InpatientSystem):
+class InpatientSystemWithFixedParition(InpatientSystem):
     def __init__(self):
         super().__init__()
+        self.PARTITION = [15, 20, 9, 25, 10]
 
-        # 安排病房
+    # 分配床位号
+    def allocateBedSP(self, tp: int):
+        assert tp in [0, 1, 2, 3, 4], "[ERROR}非法下标访问"
+        lowerLimit = sum(self.PARTITION[:tp])
+        higherLimit = lowerLimit + self.PARTITION[tp]
+        pass
+        for x in range(lowerLimit, higherLimit):
+            if self.bedCurrent[x] is None:
+                return x
+        return None
 
+    # 安排病房
     def checkin(self):
-        # temp  = list()
-        # for _ in range(6):
-        #     temp.append(0)
-        for i in self.PRIORITY[self.now.weekday()]:
-            que = self.waitingQueue[i]
-            # delCount = 0
-            while len(que) > 0:
-                emptyRoomNumber = self.allocateBed()
-                if emptyRoomNumber is None:
-                    return
-                # 入院
-                self.bedCurrent[emptyRoomNumber] = deepcopy(que[0])
-                self.bedCurrent[emptyRoomNumber][3] = self.now
-                del(que[0])
-            #     delCount += 1
-            # for _ in range(delCount):
-            #     del(que[0])
+        # for i in self.PRIORITY[self.now.weekday()]:
+        #     que = self.waitingQueue[i]
+        #     # delCount = 0
+        #     while len(que) > 0:
+        #         emptyRoomNumber = self.allocateBed()
+        #         if emptyRoomNumber is None:
+        #             return
+        #         # 入院
+        #         self.bedCurrent[emptyRoomNumber] = deepcopy(que[0])
+        #         self.bedCurrent[emptyRoomNumber][3] = self.now
+        #         del(que[0])
+        for que in self.waitingQueue:
+            delCount = 0
+            for i in que:
+                key = self.allocateBedSP(self.waitingQueue.index(que))
+                if key is None:
+                    break
+                self.bedCurrent[key] = deepcopy(i)
+                self.bedCurrent[key][3]=self.now
+                delCount += 1
+            for i in range(delCount)[::-1]:
+                del(que[i])
 
     def update(self):
         while self.now <= self.FINISH_DATE:
@@ -53,17 +69,25 @@ class InpatientSystemWithFixedPartion(InpatientSystem):
             self.record()
             # print(self.WEEKDAY[self.now.weekday()], self.changeCountLog[-1])
 
+    def test(self):
+        self.initialize()
+        self.update()
+
+
 if __name__ == '__main__':
     # inpatientSystem = InpatientSystem()
     # inpatientSystem.test()
-    scoreList = list()
-    x = list(range(0, 31))
-    for i in range(0, 31):
-        print('=====Aging %d=====' % i)
-        inpatientSystem = InpatientSystem()
-        inpatientSystem.AGING_JUDGING = i
-        inpatientSystem.test()
-        scoreList.append(inpatientSystem.score())
-    for i in range(len(x)):
-        print(x[i], scoreList[i])
-    pass
+    inpatientSYstem = InpatientSystemWithFixedParition()
+    inpatientSYstem.test()
+    inpatientSYstem.score()
+    # scoreList = list()
+    # x = list(range(0, 31))
+    # for i in range(0, 31):
+    #     print('=====Aging %d=====' % i)
+    #     inpatientSystem = InpatientSystem()
+    #     inpatientSystem.AGING_JUDGING = i
+    #     inpatientSystem.test()
+    #     scoreList.append(inpatientSystem.score())
+    # for i in range(len(x)):
+    #     print(x[i], scoreList[i])
+    # pass
