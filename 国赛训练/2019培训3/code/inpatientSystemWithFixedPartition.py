@@ -11,12 +11,20 @@ from inpatientSystem import InpatientSystem
 class InpatientSystemWithFixedParition(InpatientSystem):
     def __init__(self):
         super().__init__()
+        # 结束时间
+        self.FINISH_DATE = datetime(2008, 12, 10)
         self.PARTITION = [15, 20, 9, 25, 10]
+        self.PARTITION = [8, 14, 33, 15, 9]
+        # self.PARTITION = [11, 11, 35, 14, 8]
 
     # 分配床位号
     def allocateBedSP(self, tp: int):
         assert tp in [0, 1, 2, 3, 4], "[ERROR}非法下标访问"
         lowerLimit = sum(self.PARTITION[:tp])
+        higherLimit = lowerLimit + self.PARTITION[tp] -1 
+        lowerLimit = 0
+        for i in range(tp):
+            lowerLimit+= self.PARTITION[i]
         higherLimit = lowerLimit + self.PARTITION[tp]
         pass
         for x in range(lowerLimit, higherLimit):
@@ -70,9 +78,36 @@ class InpatientSystemWithFixedParition(InpatientSystem):
             # print(self.WEEKDAY[self.now.weekday()], self.changeCountLog[-1])
 
     def test(self):
-        self.initialize()
+        # self.initialize()
         self.update()
 
+    # 平均逗留时间
+    def waitTime(self):
+        print("病床配置\t",self.PARTITION)
+        sum = 0
+        sumList = list()
+        conList = list()
+        for _ in range(len(self.DISEASE)):
+            sumList.append(0)
+            conList.append(0)
+        for bed in self.bedHistory:
+            for i in bed:
+                delta = (i[6]-i[2]).days
+                sum += delta
+                key = self.DISEASE.index(i[1])
+                sumList[key] += delta
+                conList[key] += 1
+        for i in range(len(self.DISEASE)):
+            sumList[i] /= conList[i]
+        sum /= self.SUM_PATIENT
+        print('平均逗留时间\t', sum)
+        for i in range(len(self.DISEASE)):
+            print('\t', self.DISEASE[i], '\t', sumList[i])
+        return sum
+    
+    # 评分目标为逗留时间最短
+    def score(self):
+        return self.waitTime()
 
 if __name__ == '__main__':
     # inpatientSystem = InpatientSystem()
