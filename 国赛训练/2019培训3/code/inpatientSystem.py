@@ -24,6 +24,7 @@ class InpatientSystem(Const):
         self.FINISH_DATE = datetime(2008, 10, 10)
         # 老化门槛
         self.AGING_JUDGING = 10
+        print("[aging judging date]\t%d" % self.AGING_JUDGING)
         # 床位数
         self.BED_COUNT = 79
         # 今日日期
@@ -61,7 +62,8 @@ class InpatientSystem(Const):
         # 平均恢复时间（范围再加1天，此处为下限）
         self.recoverTime = (2, 2, 10, 8, 6)
         # 周末是否手术
-        self.WORK_ON_WEEKEND = False
+        self.WORK_ON_WEEKEND = True
+        print("[work on weekend]\t%s" % (str(self.WORK_ON_WEEKEND)))
 
         # self.temp = 0
 
@@ -413,7 +415,7 @@ class InpatientSystem(Const):
         tmp += 0.5*self.evaluateWait()
         tmp += 0.1*self.evaluatePrep()
         tmp += 0.1*self.bedUsedRate()
-        print('score\t%f' % tmp)
+        print('[score]\t%.4f' % tmp)
         return tmp
 
 # 满意度sigmoid变种函数
@@ -427,13 +429,16 @@ if __name__ == '__main__':
     # inpatientSystem = InpatientSystem()
     # inpatientSystem.test()
     scoreList = list()
-    x = list(range(0, 31))
-    for i in range(0, 31):
+    l = 10
+    r = 11
+    x = list(range(l, r))
+    for i in range(l, r):
         print('=====Aging %d=====' % i)
         inpatientSystem = InpatientSystem()
         inpatientSystem.AGING_JUDGING = i
         inpatientSystem.test()
         scoreList.append(inpatientSystem.score())
+    print("=======分数清单========")
     for i in range(len(x)):
-        print(x[i], scoreList[i])
+        print(x[i], '\t', scoreList[i])
     pass
