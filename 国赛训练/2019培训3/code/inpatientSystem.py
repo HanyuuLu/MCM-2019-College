@@ -21,7 +21,7 @@ class InpatientSystem(Const):
         # 病房统计率结束点
         self.FINSIH_RATE_DATE = datetime(2008, 9, 11)
         # 结束时间
-        self.FINISH_DATE = datetime(2008, 10, 10)
+        self.FINISH_DATE = datetime(2008, 12, 10)
         # 老化门槛
         self.AGING_JUDGING = 10
         print("[aging judging date]\t%d" % self.AGING_JUDGING)
@@ -59,15 +59,51 @@ class InpatientSystem(Const):
             (4, 5, 1, 0, 3, 2),
             (4, 5, 1, 0, 3, 2)
         )
+        # # 模型四1
+        # self.PRIORITY = (
+        #     (0, 1, 5, 4, 2, 3),
+        #     (0, 1, 4, 2, 3, 5),
+        #     (0, 1, 4, 2, 3, 5),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 5, 4, 2, 3)
+        # )
+        # # 模型四2
+        # self.PRIORITY = (
+        #     (0, 1, 5, 4, 2, 3),
+        #     (0, 1, 5, 4, 2, 3),
+        #     (0, 1, 4, 2, 3, 5),
+        #     (0, 1, 4, 2, 3, 5),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 2, 3, 5, 4)
+        # )
+        # # 模型四3
+        # self.PRIORITY = (
+        #     (0, 1, 5, 4, 2, 3),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 4, 2, 3, 5),
+        #     (0, 1, 4, 2, 3, 5),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 2, 3, 5, 4),
+        #     (0, 1, 5, 4, 2, 3)
+        # )
+        print("[Priority]", self.PRIORITY)
         # 平均恢复时间（范围再加1天，此处为下限）
         self.recoverTime = (2, 2, 10, 8, 6)
         # 周末是否手术
         self.WORK_ON_WEEKEND = True
         print("[work on weekend]\t%s" % (str(self.WORK_ON_WEEKEND)))
+        # 清退人次统计
+        self.countClear = 0
+        # 安排病房人次统计
+        self.countCheckin = 0
 
         # self.temp = 0
 
     # 分配床位号
+
     def allocateBed(self):
         for i in range(len(self.bedCurrent)):
             if self.bedCurrent[i] is None:
@@ -82,6 +118,7 @@ class InpatientSystem(Const):
                 self.bedHistory[self.bedCurrent.index(i)].append(i)
                 self.changeCountLog[-1] += 1
                 self.bedCurrent[self.bedCurrent.index(i)] = None
+                self.countClear += 1
 
     # 安排病房
 
@@ -92,6 +129,7 @@ class InpatientSystem(Const):
                 if i[3] == self.now:
                     self.bedCurrent[self.allocateBed()] = deepcopy(i)
                     deleteList.append(que.index(i))
+                    self.countCheckin += 1
             for i in deleteList[::-1]:
                 del(
                     self.waitingQueue[
@@ -106,20 +144,22 @@ class InpatientSystem(Const):
         # temp  = list()
         # for _ in range(6):
         #     temp.append(0)
-        for i in self.PRIORITY[self.now.weekday()]:
-            que = self.waitingQueue[i]
-            # delCount = 0
-            while len(que) > 0:
+        for key in self.PRIORITY[self.now.weekday()]:
+            que = self.waitingQueue[key]
+            delList = list()
+            for i in range(len(que)):
                 emptyRoomNumber = self.allocateBed()
                 if emptyRoomNumber is None:
+                    for p in delList[::-1]:
+                        del(self.waitingQueue[key][p])
                     return
                 # 入院
-                self.bedCurrent[emptyRoomNumber] = deepcopy(que[0])
+                self.bedCurrent[emptyRoomNumber] = deepcopy(que[i])
                 self.bedCurrent[emptyRoomNumber][3] = self.now
-                del(que[0])
-            #     delCount += 1
-            # for _ in range(delCount):
-            #     del(que[0])
+                delList.append(i)
+                self.countCheckin += 1
+            for p in delList[::-1]:
+                del(self.waitingQueue[key][p])
 
     # 读入数据表记录
 
@@ -163,7 +203,7 @@ class InpatientSystem(Const):
             if que == 4:
                 continue
             for i in self.waitingQueue[que]:
-                if (self.now-i[2]).days > 10:
+                if (self.now-i[2]).days > self.AGING_JUDGING:
                     self.waitingQueue[-1].append(deepcopy(i))
                     del(
                         self.waitingQueue[que][
@@ -240,7 +280,6 @@ class InpatientSystem(Const):
                     )
 
     # 初始化
-
     def initialize(self):
         while (self.now - self.DIVIDED_DATE).days < -1:
             self.now += timedelta(days=1)
@@ -305,6 +344,8 @@ class InpatientSystem(Const):
             for i in bed:
                 delta = (i[4]-i[3]).days
                 res = sigmoid(delta, avg[self.DISEASE.index(i[1])], 4)
+                if res > 1:
+                    pass
                 sumSat += res
                 sum += delta
                 key = self.DISEASE.index(i[1])
@@ -386,6 +427,7 @@ class InpatientSystem(Const):
     def test(self):
         self.initialize()
         self.update()
+        self.finalCheck()
         # print(self.evaluateTurnover())
         # print(self.evaluatePrep())
         # print(self.evaluateWait())
@@ -407,8 +449,26 @@ class InpatientSystem(Const):
         #             if (i[3]-i[2]).days > 1:
         #                 pass
 
-    # 评分
+    # 统计
+    def stat(self):
+        statList = list()
+        for i in range(len(self.DISEASE)):
+            statList.append(list())
+            for x in range(7):
+                statList[i].append(list())
+        for bed in self.bedHistory:
+            for x in bed:
+                keyDis = self.DISEASE.index(x[1])
+                keyWeek = x[2].weekday()
+                if (x[3]-x[2]).days > 40:
+                    print("[PR]")
+                statList[keyDis][keyWeek].append(
+                    (x[3]-x[2]).days
+                )
+        print(statList)
 
+
+    # 评分
     def score(self):
         tmp = 0
         tmp += 0.3*self.evaluateTurnover()
@@ -418,9 +478,13 @@ class InpatientSystem(Const):
         print('[score]\t%.4f' % tmp)
         return tmp
 
+    # 数据检查
+    def finalCheck(self):
+        assert self.SUM_PATIENT == self.countCheckin, "住院人次登记异常:%d"%self.countCheckin
+        assert self.SUM_PATIENT == self.countClear,"出院人次登记异常:%d%d"%self.countClear
+        print("数据检查无殊")
+
 # 满意度sigmoid变种函数
-
-
 def sigmoid(x: float, b: float, k: float)->float:
     return -1/(1+E**(k*(-x+b)))+1
 
@@ -429,15 +493,16 @@ if __name__ == '__main__':
     # inpatientSystem = InpatientSystem()
     # inpatientSystem.test()
     scoreList = list()
-    l = 10
-    r = 11
-    x = list(range(l, r))
-    for i in range(l, r):
+    left = 10
+    right = 11
+    x = list(range(left, right))
+    for i in range(left, right):
         print('=====Aging %d=====' % i)
         inpatientSystem = InpatientSystem()
         inpatientSystem.AGING_JUDGING = i
         inpatientSystem.test()
         scoreList.append(inpatientSystem.score())
+        # inpatientSystem.stat()
     print("=======分数清单========")
     for i in range(len(x)):
         print(x[i], '\t', scoreList[i])

@@ -1,10 +1,10 @@
 from copy import deepcopy
 from datetime import datetime, timedelta
-from math import e as E
-from random import randint
-from statistics import Const
+# from math import e as E
+# from random import randint
+# from statistics import Const
 
-from dataReader import dataReader
+# from dataReader import dataReader
 from inpatientSystem import InpatientSystem
 
 
@@ -21,10 +21,10 @@ class InpatientSystemWithFixedParition(InpatientSystem):
     def allocateBedSP(self, tp: int):
         assert tp in [0, 1, 2, 3, 4], "[ERROR}非法下标访问"
         lowerLimit = sum(self.PARTITION[:tp])
-        higherLimit = lowerLimit + self.PARTITION[tp] -1 
+        higherLimit = lowerLimit + self.PARTITION[tp] - 1
         lowerLimit = 0
         for i in range(tp):
-            lowerLimit+= self.PARTITION[i]
+            lowerLimit += self.PARTITION[i]
         higherLimit = lowerLimit + self.PARTITION[tp]
         pass
         for x in range(lowerLimit, higherLimit):
@@ -52,7 +52,7 @@ class InpatientSystemWithFixedParition(InpatientSystem):
                 if key is None:
                     break
                 self.bedCurrent[key] = deepcopy(i)
-                self.bedCurrent[key][3]=self.now
+                self.bedCurrent[key][3] = self.now
                 delCount += 1
             for i in range(delCount)[::-1]:
                 del(que[i])
@@ -83,7 +83,7 @@ class InpatientSystemWithFixedParition(InpatientSystem):
 
     # 平均逗留时间
     def waitTime(self):
-        print("病床配置\t",self.PARTITION)
+        print("病床配置\t", self.PARTITION)
         sum = 0
         sumList = list()
         conList = list()
@@ -104,10 +104,11 @@ class InpatientSystemWithFixedParition(InpatientSystem):
         for i in range(len(self.DISEASE)):
             print('\t', self.DISEASE[i], '\t', sumList[i])
         return sum
-    
+
     # 评分目标为逗留时间最短
     def score(self):
         return self.waitTime()
+
 
 if __name__ == '__main__':
     # inpatientSystem = InpatientSystem()
