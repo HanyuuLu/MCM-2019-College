@@ -1,3 +1,4 @@
+from  math import sqrt
 from dataReader import dataReader
 from random import randint
 
@@ -15,7 +16,11 @@ class Classifier:
             if key in coreList:
                 continue
             coreList.append(key)
-        
+
+
+def dis(obj1: list, obj2: list):
+    return sqrt((obj1[1]-obj2[1])**2+(obj1[2]-obj2[2])**2)
+
 
 
 if __name__ == '__main__':
