@@ -468,6 +468,34 @@ class InpatientSystem(Const):
         print(statList)
 
 
+    # 频数分布
+    def freq(self):
+        freqList = list()
+        for i in range(len(self.DISEASE)):
+            freqList.append(dict())
+        for bed in self.bedHistory:
+            for i in bed:
+                key = self.DISEASE.index(i[1])
+                if i[2] in freqList[key]:
+                    freqList[key][i[2]]+=1
+                else:
+                    freqList[key][i[2]]=1
+        resList = list()
+        for i in range(len(self.DISEASE)):
+            resList.append(dict())
+        for i in range(len(self.DISEASE)):
+            for key in freqList[i]:
+                if freqList[i][key] in resList[i]:
+                    resList[i][freqList[i][key]]+=1
+                else:
+                    resList[i][freqList[i][key]]=1
+        print(resList)
+        for i in resList:
+            print(self.DISEASE[resList.index(i)])
+            for key in i:
+                print(key,'\t',i[key])
+
+
     # 评分
     def score(self):
         tmp = 0
@@ -492,18 +520,23 @@ def sigmoid(x: float, b: float, k: float)->float:
 if __name__ == '__main__':
     # inpatientSystem = InpatientSystem()
     # inpatientSystem.test()
-    scoreList = list()
-    left = 10
-    right = 11
-    x = list(range(left, right))
-    for i in range(left, right):
-        print('=====Aging %d=====' % i)
-        inpatientSystem = InpatientSystem()
-        inpatientSystem.AGING_JUDGING = i
-        inpatientSystem.test()
-        scoreList.append(inpatientSystem.score())
-        # inpatientSystem.stat()
-    print("=======分数清单========")
-    for i in range(len(x)):
-        print(x[i], '\t', scoreList[i])
-    pass
+    # scoreList = list()
+    # left = 10
+    # right = 11
+    # x = list(range(left, right))
+    # for i in range(left, right):
+    #     print('=====Aging %d=====' % i)
+    #     inpatientSystem = InpatientSystem()
+    #     inpatientSystem.AGING_JUDGING = i
+    #     inpatientSystem.test()
+    #     scoreList.append(inpatientSystem.score())
+    #     # inpatientSystem.stat()
+    # print("=======分数清单========")
+    # for i in range(len(x)):
+    #     print(x[i], '\t', scoreList[i])
+    # pass
+
+    inpatientSystem = InpatientSystem()
+    inpatientSystem.test()
+    inpatientSystem.freq()
+    
