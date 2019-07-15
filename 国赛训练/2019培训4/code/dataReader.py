@@ -34,6 +34,7 @@ def dataReader():
     except Exception as e:
         print('bad data file')
         print('\t[Exception]\t%s' % str(e))
+        exit()
     # for i in data:
     #     for x in i:
     #         print(x)

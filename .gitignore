@@ -1,4 +1,5 @@
 .vscode
 **/20170207.xlsx.csv
 **/.ipynb_checkpoints
-
+**/__pycache__/
+*.png
