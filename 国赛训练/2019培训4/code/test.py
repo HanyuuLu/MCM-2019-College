@@ -2,7 +2,7 @@
 
 import matplotlib.pylab as plt
 # import numpy as np
-import scipy  
+import scipy
 import scipy.cluster.hierarchy as sch
 from scipy.cluster.vq import kmeans, vq, whiten
 

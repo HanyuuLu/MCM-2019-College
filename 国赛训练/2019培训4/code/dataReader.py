@@ -38,7 +38,7 @@ def dataReader():
     # for i in data:
     #     for x in i:
     #         print(x)
-    print('[data fetched successfully]')
+    print('😀[info]\tdata fetched successfully')
     return data
 
 
