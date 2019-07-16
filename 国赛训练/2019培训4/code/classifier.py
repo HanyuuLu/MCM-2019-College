@@ -46,17 +46,27 @@ class Classifier:
 
     # 绘制聚类图
     def draw(self):
-        plt.figure()
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+        plt.rcParams['axes.unicode_minus'] = False
+        plt.figure(figsize=(30, 20), dpi=100)
+        plt.xlim(112, 115)
+        plt.ylim(22, 24)
+        plt.xlabel('经度/°E')
+        plt.ylabel('纬度/°N')
         plt.title(
             '%d centers with average distance %.4f'
             % (self.typeCount, self.totalAverage)
         )
         # print(str(self.coreList))
+        handerList = list()
         for i in self.classList:
             col = (random(), random(), random())
-            plt.plot([x[2] for x in i], [x[1] for x in i],
+            handerList.append(
+                plt.plot([x[2] for x in i], [x[1] for x in i],
                      'x', color=col)
-        plt.text(112.74, 23.8, str(self.coreList), ha='left', fontsize=8)
+            )
+        # plt.text(112.74, 23.8, str(self.coreList), ha='left', fontsize=8)
+        plt.legend(self.coreList)
         plt.draw()
         # plt.show()
         # plt.text(4, 1, t, ha='left', rotation=15, wrap=True)
