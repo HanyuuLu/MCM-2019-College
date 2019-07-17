@@ -4,6 +4,7 @@ from random import randint, random
 import matplotlib.pyplot as plt
 
 from dataReader import dataReader
+from configIO import *
 
 
 class Classifier:
@@ -63,7 +64,7 @@ class Classifier:
             col = (random(), random(), random())
             handerList.append(
                 plt.plot([x[2] for x in i], [x[1] for x in i],
-                     'x', color=col)
+                         'x', color=col)
             )
         # plt.text(112.74, 23.8, str(self.coreList), ha='left', fontsize=8)
         plt.legend(self.coreList)
@@ -129,6 +130,7 @@ class Classifier:
                 conn += 1
         # 还原最佳聚类现场以便后续画图
         self.coreList = resList
+        configWrite(self.typeCount, self.coreList)
         self.calc()
         print('[info]\tdes finish with best score %f' % score)
         print(resList)
