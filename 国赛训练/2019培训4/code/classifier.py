@@ -173,7 +173,12 @@ class Classifier:
             )
             try:
                 with open(fileNameWithPath, 'w') as w:
-                    w.write(dumps({'prov': prov, 'aban': aban}))
+                    w.write(dumps({
+                        '聚类数': self.typeCount,
+                        '聚类核心号':self.coreList,
+                        '完成交易': prov,
+                        '未完成交易': aban
+                    }))
             except Exception as e:
                 print('[ERROR]\t %s😂💔' % str(e))
 
