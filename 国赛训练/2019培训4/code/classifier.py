@@ -19,7 +19,7 @@ class Classifier:
         # 下标上限
         self.UPPER_LIMIT = len(self.rawData) - 1
         # 输出结果路径
-        self.OUTPUT = 'output'
+        self.OUTPUT = 'E:\\Repos\\Resource'
         if not os.path.exists(self.OUTPUT):
             os.makedirs(self.OUTPUT)
             print('⚠[INFO]\t output folder doesn\'t exists, created')
@@ -153,31 +153,36 @@ class Classifier:
             self.typeCount = conf[0]
             self.coreList = conf[1]
             self.calc()
-            # 成交数据
-            prov = list()
-            # 未成交数据
-            aban = list()
+            # 统计数据
+            res = list()
             for group in self.classList:
+                res.append(dict())
                 p = [x[3] for x in group if x[4] == 1]
                 a = [x[3] for x in group if x[4] == 0]
-                if p == []:
-                    prov.append(None)
+                label = ('完成', '未完成')
+                data = (p,a)
+                for i in range(len(label)):
+                    res[-1][label[i]] = {'len': len(data[i])}
+                    if res[-1][label[i]]['len'] != 0:
+                        res[-1][label[i]].update(
+                            {
+                                'max': max(data[i]),
+                                'min': min(data[i]),
+                                'avg': round(sum(data[i]) / len(data[i]), 4)
+                            }
+                        )
+                if len(p) + len(a) == 0:
+                    res[-1]['成交/总'] = None
                 else:
-                    prov.append({'max': max(p), 'min': min(p)})
-                if a == []:
-                    aban.append(None)
-                else:
-                    aban.append({'max': max(a), 'min': min(a)})
+                    res[-1]['成交/总'] = round(len(p)/(len(p)+len(a)),4)
             fileNameWithPath = os.path.join(
-                self.OUTPUT, str(self.typeCount) + '.json'
-            )
+                self.OUTPUT, str(self.typeCount) + '.json')
             try:
                 with open(fileNameWithPath, 'w') as w:
                     w.write(dumps({
                         '聚类数': self.typeCount,
-                        '聚类核心号':self.coreList,
-                        '完成交易': prov,
-                        '未完成交易': aban
+                        '聚类核心号': self.coreList,
+                        '聚类统计数据': res
                     }))
             except Exception as e:
                 print('[ERROR]\t %s😂💔' % str(e))

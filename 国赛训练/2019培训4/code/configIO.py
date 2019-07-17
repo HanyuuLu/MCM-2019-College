@@ -1,7 +1,7 @@
 import glob
 import os
 
-configPath = 'output'
+configPath = 'E:\\Repos\\Resource'
 
 
 def configWrite(typeCounter: int, coreList: list)->None:
