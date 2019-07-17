@@ -1,10 +1,12 @@
 from math import sqrt
 from random import randint, random
+import os
 
 import matplotlib.pyplot as plt
 
 from dataReader import dataReader
-from configIO import *
+from configIO import configRead, configWrite, fetchConfigList
+from json import loads, dumps
 
 
 class Classifier:
@@ -16,6 +18,11 @@ class Classifier:
         self.LOWER_LIMIT = 0
         # 下标上限
         self.UPPER_LIMIT = len(self.rawData) - 1
+        # 输出结果路径
+        self.OUTPUT = 'output'
+        if not os.path.exists(self.OUTPUT):
+            os.makedirs(self.OUTPUT)
+            print('⚠[INFO]\t output folder doesn\'t exists, created')
 
     # 产生一组不重复的随机中心
     def generateRandomCenter(self, typeCount: int):
@@ -43,7 +50,7 @@ class Classifier:
                     ptr = self.coreList.index(j)
                     key = distance
             self.classList[ptr].append(i)
-        # print('[info] calc finished 😂')
+        # print('😜✔[info] calc finished')
 
     # 绘制聚类图
     def draw(self):
@@ -71,7 +78,8 @@ class Classifier:
         plt.draw()
         # plt.show()
         # plt.text(4, 1, t, ha='left', rotation=15, wrap=True)
-        plt.savefig('resPic\%s.jpg' % str(self.typeCount))
+        fileName = os.path.join(self.OUTPUT, '%s.jpg' % str(self.typeCount))
+        plt.savefig(fileName)
 
     # 计算得分（平均距离）
     def score(self):
@@ -130,11 +138,44 @@ class Classifier:
                 conn += 1
         # 还原最佳聚类现场以便后续画图
         self.coreList = resList
+        # 每个聚类的最优化数据（聚类个数，中心点数据被持久化保存）
         configWrite(self.typeCount, self.coreList)
+        # 计算最优化数据的分数
         self.calc()
         print('[info]\tdes finish with best score %f' % score)
         print(resList)
         return resList
+
+    # 分析附录一每个群组的情况
+    def processGroup(self):
+        configList = fetchConfigList()
+        for conf in configList:
+            self.typeCount = conf[0]
+            self.coreList = conf[1]
+            self.calc()
+            # 成交数据
+            prov = list()
+            # 未成交数据
+            aban = list()
+            for group in self.classList:
+                p = [x[3] for x in group if x[4] == 1]
+                a = [x[3] for x in group if x[4] == 0]
+                if p == []:
+                    prov.append(None)
+                else:
+                    prov.append({'max': max(p), 'min': min(p)})
+                if a == []:
+                    aban.append(None)
+                else:
+                    aban.append({'max': max(a), 'min': min(a)})
+            fileNameWithPath = os.path.join(
+                self.OUTPUT, str(self.typeCount) + '.json'
+            )
+            try:
+                with open(fileNameWithPath, 'w') as w:
+                    w.write(dumps({'prov': prov, 'aban': aban}))
+            except Exception as e:
+                print('[ERROR]\t %s😂💔' % str(e))
 
 
 def dis(obj1: list, obj2: list):
@@ -147,7 +188,8 @@ def dis(obj1: list, obj2: list):
 
 if __name__ == '__main__':
     exp = Classifier()
-    for i in range(3, 20):
-        print('[center counter]\t%d' % i)
-        exp.des(i)
-        exp.draw()
+    exp.processGroup()
+    # for i in range(3, 20):
+    #     print('[center counter]\t%d\t🟢' % i)
+    #     exp.des(i)
+    #     exp.draw()

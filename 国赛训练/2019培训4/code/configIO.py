@@ -1,14 +1,15 @@
 import glob
 import os
 
-configPath = 'config'
+configPath = 'output'
 
 
 def configWrite(typeCounter: int, coreList: list)->None:
     if not os.path.exists(configPath):
         os.makedirs(configPath)
     try:
-        with open(os.path.join(configPath, str(typeCounter)+'.config'), 'w') as w:
+        fileName = os.path.join(configPath, '%s.config' % str(typeCounter))
+        with open(fileName, 'w') as w:
             w.write(str(typeCounter)+'\n')
             for i in coreList:
                 w.write(str(i) + '\n')
@@ -27,10 +28,15 @@ def configRead(fileName: str) -> (int, list):
     except Exception as e:
         print('😔[ERROR]\t%s' % str(e))
 
+
 def fetchConfigList() -> tuple:
-    for fileName in glob.glob(configPath+'\*.config'):
-        print(fileName)
+    fetchConfigList = list()
+    for fileName in glob.glob('%s\\*.config' % configPath):
+        fetchConfigList.append(configRead(fileName))
+    return tuple(fetchConfigList)
 
 
 if __name__ == '__main__':
-    print(configRead(os.path.join(configPath, '3.config')))
+    # print(configRead(os.path.join(configPath, '3.config')))
+    a = fetchConfigList()
+    print(a)
