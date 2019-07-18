@@ -25,18 +25,20 @@ if __name__ == '__main__':
                         res[1].append(0)
                     else:
                         res[0].append(i['完成']['min'])
-                        res[1].append(i['完成']['max'])
+                        res[1].append(i['完成']['max'] - i['完成']['min'])
                     if i['未完成']['len'] == 0:
                         res[2].append(0)
                         res[3].append(0)
                     else:
                         res[2].append(i['未完成']['min'])
-                        res[3].append(i['未完成']['max'])
+                        res[3].append(i['未完成']['max']-i['未完成']['min'])
                 print(res)
                 x = list(range(len(res[0])))
                 x = np.arange(len(res[0]))
                 width = 0.4
+                plt.cla()
                 plt.clf()
+                plt.ylim(0,100)
                 plt.title('%d centers 成交区间价格' % len(res[0]))
                 plt.bar(x-width/2, res[1], bottom=res[0], width=width)
                 plt.bar(x+width/2, res[3], bottom=res[2], width=width)
