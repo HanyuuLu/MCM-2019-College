@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from dataReader import dataReader
 from configIO import configRead, configWrite, fetchConfigList
 from json import loads, dumps
+from const import OUTPUT_PATH
 
 
 class Classifier:
@@ -19,7 +20,7 @@ class Classifier:
         # 下标上限
         self.UPPER_LIMIT = len(self.rawData) - 1
         # 输出结果路径
-        self.OUTPUT = 'E:\\Repos\\Resource'
+        self.OUTPUT = OUTPUT_PATH
         if not os.path.exists(self.OUTPUT):
             os.makedirs(self.OUTPUT)
             print('⚠[INFO]\t output folder doesn\'t exists, created')
