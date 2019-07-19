@@ -1,13 +1,14 @@
+import os
+from json import dumps, loads
 from math import sqrt
 from random import randint, random
-import os
 
 import matplotlib.pyplot as plt
 
-from dataReader import dataReader
+import const
 from configIO import configRead, configWrite, fetchConfigList
-from json import loads, dumps
 from const import OUTPUT_PATH
+from dataReader import dataReader
 
 
 class Classifier:
@@ -57,9 +58,15 @@ class Classifier:
     def draw(self):
         plt.rcParams['font.sans-serif'] = ['SimHei']
         plt.rcParams['axes.unicode_minus'] = False
-        plt.figure(figsize=(30, 20), dpi=100)
-        plt.xlim(112, 115)
-        plt.ylim(22, 24)
+        plt.figure(
+            figsize=(
+                const.FIGURE_WIDTH,
+                const.FIGURE_HEIGHT
+            ),
+            dpi=const.FIGURE_DPI
+        )
+        plt.xlim(const.LONGITUDE_LOWER, const.LONGITUDE_UPPER)
+        plt.ylim(const.LATITUDE_LOWER, const.LATITUDE_UPPER)
         plt.xlabel('经度/°E')
         plt.ylabel('纬度/°N')
         plt.title(
@@ -158,10 +165,17 @@ class Classifier:
             res = list()
             for group in self.classList:
                 res.append(dict())
+                if len([x[3] for x in group]):
+                    res[-1]['avg'] = round(
+                        sum([x[3] for x in group])/len([x[3] for x in group]),
+                        4
+                    )
+                else:
+                    res[-1]['avg'] = None
                 p = [x[3] for x in group if x[4] == 1]
                 a = [x[3] for x in group if x[4] == 0]
                 label = ('完成', '未完成')
-                data = (p,a)
+                data = (p, a)
                 for i in range(len(label)):
                     res[-1][label[i]] = {'len': len(data[i])}
                     if res[-1][label[i]]['len'] != 0:
@@ -175,7 +189,7 @@ class Classifier:
                 if len(p) + len(a) == 0:
                     res[-1]['成交/总'] = None
                 else:
-                    res[-1]['成交/总'] = round(len(p)/(len(p)+len(a)),4)
+                    res[-1]['成交/总'] = round(len(p)/(len(p)+len(a)), 4)
             fileNameWithPath = os.path.join(
                 self.OUTPUT, str(self.typeCount) + '.json')
             try:
@@ -199,8 +213,8 @@ def dis(obj1: list, obj2: list):
 
 if __name__ == '__main__':
     exp = Classifier()
-    exp.processGroup()
     # for i in range(3, 20):
     #     print('[center counter]\t%d\t🟢' % i)
     #     exp.des(i)
     #     exp.draw()
+    exp.processGroup()
