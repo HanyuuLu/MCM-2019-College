@@ -1,6 +1,5 @@
 ﻿import xlrd
 import sys
-# import datetime
 
 
 def dataConverter(src: list)->list:

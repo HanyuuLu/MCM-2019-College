@@ -1,7 +1,7 @@
 import glob
 import os
-from const import OUTPUT_PATH
-
+# import sys
+from core.const import OUTPUT_PATH
 configPath = OUTPUT_PATH
 
 
@@ -35,9 +35,3 @@ def fetchConfigList() -> tuple:
     for fileName in glob.glob('%s\\*.config' % configPath):
         fetchConfigList.append(configRead(fileName))
     return tuple(fetchConfigList)
-
-
-if __name__ == '__main__':
-    # print(configRead(os.path.join(configPath, '3.config')))
-    a = fetchConfigList()
-    print(a)

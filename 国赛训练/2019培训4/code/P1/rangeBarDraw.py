@@ -3,8 +3,9 @@ import os
 import re
 import json
 import numpy as np
-
-from const import OUTPUT_PATH
+import sys
+sys.path.append('.\\')
+from core.const import OUTPUT_PATH
 
 if __name__ == '__main__':
     plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -38,7 +39,7 @@ if __name__ == '__main__':
                 width = 0.4
                 plt.cla()
                 plt.clf()
-                plt.ylim(0,100)
+                plt.ylim(0, 100)
                 plt.title('%d centers 成交区间价格' % len(res[0]))
                 plt.bar(x-width/2, res[1], bottom=res[0], width=width)
                 plt.bar(x+width/2, res[3], bottom=res[2], width=width)

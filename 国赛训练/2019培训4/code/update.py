@@ -1,5 +1,5 @@
 import os
-path  = '.\\'
+path = '.\\'
 if __name__ == '__main__':
     string = '# Inari\'s resource station\n '
     for (folder, subFolder, fileName) in os.walk(path):

@@ -1,14 +1,15 @@
 import os
-from json import dumps, loads
+from json import dumps
 from math import sqrt
 from random import randint, random
 
 import matplotlib.pyplot as plt
 
-import const
-from configIO import configRead, configWrite, fetchConfigList
-from const import OUTPUT_PATH
-from dataReader import dataReader
+# import core.const
+from core import const
+from core.configIO import configWrite, fetchConfigList
+from core.const import OUTPUT_PATH
+from core.dataReader import dataReader
 
 
 class Classifier:
@@ -209,12 +210,3 @@ def dis(obj1: list, obj2: list):
     assert isinstance(obj2, list), \
         '[ERROR] 第二个参数应当为list,输入的参数类型为$s' % str(type(obj2))
     return sqrt((obj1[1] - obj2[1]) ** 2 + (obj1[2] - obj2[2]) ** 2)
-
-
-if __name__ == '__main__':
-    exp = Classifier()
-    # for i in range(3, 20):
-    #     print('[center counter]\t%d\t🟢' % i)
-    #     exp.des(i)
-    #     exp.draw()
-    exp.processGroup()

@@ -1,23 +1,23 @@
-import matplotlib
+# import math
+import sys
+
+# import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import const
-import math
+
+sys.path.append('.\\')
+from core import const
+
+print(sys.path)
 delta = 0.05
-# x = np.arange(
-#     const.LONGITUDE_LOWER,
-#     const.LONGITUDE_UPPER,
-#     delta
-# )
-# y = np.arange(
-#     const.LATITUDE_LOWER,
-#     const.LATITUDE_UPPER,
-#     delta
-# )
-x = np.arange(-4,4,
+x = np.arange(
+    const.LONGITUDE_LOWER,
+    const.LONGITUDE_UPPER,
     delta
 )
-y = np.arange(-4,4,
+y = np.arange(
+    const.LATITUDE_LOWER,
+    const.LATITUDE_UPPER,
     delta
 )
 X, Y = np.meshgrid(x, y)

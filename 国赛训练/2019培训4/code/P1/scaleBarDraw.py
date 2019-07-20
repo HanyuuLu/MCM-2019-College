@@ -2,15 +2,16 @@ import matplotlib.pyplot as plt
 import os
 import re
 import json
-
-from const import OUTPUT_PATH
+import sys
+sys.path.append('.\\')
+from core.const import OUTPUT_PATH
 
 if __name__ == '__main__':
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
     for (folder, subFolder, fileName) in os.walk(OUTPUT_PATH):
         for i in fileName:
-            if re.match('^.*\.json', i):
+            if re.match(r'^.*\.json', i):
                 with open(os.path.join(folder, i)) as w:
                     rawData = w.read()
                 data = json.loads(rawData)
