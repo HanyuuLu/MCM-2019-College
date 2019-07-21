@@ -27,6 +27,12 @@ class Classifier:
             os.makedirs(self.OUTPUT)
             print('⚠[INFO]\t output folder doesn\'t exists, created')
 
+    # 导入配置
+    def loadConfig(self, configList: list):
+        self.typeCount = configList[0]
+        self.coreList = configList[1]
+        assert self.typeCount == len(self.coreList),'[ERROR]\t 错误配置'
+
     # 产生一组不重复的随机中心
     def generateRandomCenter(self, typeCount: int):
         # 随机中心（聚类）数

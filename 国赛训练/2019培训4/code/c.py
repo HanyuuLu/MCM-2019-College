@@ -9,22 +9,39 @@ import os
 sys.path.append('.\\')
 print(OUTPUT_PATH)
 
-
-def fit(data: list):
+def fit(data: list,core:list):
     if len(data) == 0:
         return None
     tmpList = dict()
     for i in data:
-        if i in tmpList:
-            tmpList[i] += 1
+        if i[3] in tmpList:
+            tmpList[i[3]][i[4]] += 1
         else:
-            tmpList[i] = 1
-    x, y = [x for x in tmpList], [tmpList[x] for x in tmpList]
-    res = np.polyfit(x, y, 2)
+            tmpList[i[3]] = [0, 0]
+            tmpList[i[3]][i[4]] += 1
+    # for i in tmpList:
+    #     tmpList[i] = tmpList[i][1] / sum(tmpList[i])
+    # px
+    px = dict()
+    for i in tmpList:
+        px[i] = sum(tmpList[i])/sum([sum(tmpList[key]) for key in tmpList])
+    # qx
+    qx = dict()
+    for i in tmpList:
+        qx[i] = tmpList[i][1] / sum(tmpList[i])
+    # score
+    score = dict()
+    for i in px:
+        score[i] = 0.7 * px[i] + 0.3 * qx[i]
+        score[i] = round(score[i],6)
+    m = max([score[x] for x in score])
+    res = [key for key in score if score[key] == m]
+    pos = (core[2],core[1])
+    rtnRes = list()
     for i in range(len(res)):
-        res[i] = round(res[i], 6)
-    return {'poly': list(res), 'min': min(data), 'max': max(data)}
-    # return (res, min(data), max(data))
+        rtnRes.append({'no': res[i], 'E': pos[0], 'N': pos[1]})
+    return  rtnRes
+
 
 
 def draw(data: list):
@@ -39,9 +56,9 @@ def draw(data: list):
         min, max = data[i]['min'], data[i]['max']
         pol = data[i]['poly']
         x = np.arange(min, max, 0.1)
-        y = pol[0]*x**2+pol[1]*x+pol[2]
+        y = pol[0]*x+pol[1]
         axs[i].plot(x, y)
-    fileName = os.path.join(OUTPUT_PATH, 'P01poly%d.jpg' % calc.typeCount)
+    fileName = os.path.join(OUTPUT_PATH, 'P01point%d.jpg' % calc.typeCount)
     plt.savefig(fileName)
 
 
@@ -53,9 +70,10 @@ if __name__ == "__main__":
         calc.calc()
         resList = list()
         for group in calc.classList:
-            resList.append(fit([x[3] for x in group]))
-        fileName = os.path.join(OUTPUT_PATH, 'P01poly%d.json' % calc.typeCount)
+            core = calc.rawData[calc.coreList[calc.classList.index(group)]]
+            resList.append(fit(group,core))
+        fileName = os.path.join(OUTPUT_PATH, 'P01point%d.json' % calc.typeCount)
         with open(fileName, 'w') as w:
             w.write(dumps(resList))
         print(fileName)
-        draw(resList)
+        # draw(resList)
