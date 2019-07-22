@@ -9,7 +9,8 @@ import os
 sys.path.append('.\\')
 print(OUTPUT_PATH)
 
-def fit(data: list,core:list):
+
+def fit(data: list, core: list):
     if len(data) == 0:
         return None
     tmpList = dict()
@@ -33,15 +34,14 @@ def fit(data: list,core:list):
     score = dict()
     for i in px:
         score[i] = 0.7 * px[i] + 0.3 * qx[i]
-        score[i] = round(score[i],6)
+        score[i] = round(score[i], 6)
     m = max([score[x] for x in score])
     res = [key for key in score if score[key] == m]
-    pos = (core[2],core[1])
+    pos = (core[2], core[1])
     rtnRes = list()
     for i in range(len(res)):
         rtnRes.append({'no': res[i], 'E': pos[0], 'N': pos[1]})
-    return  rtnRes
-
+    return rtnRes
 
 
 def draw(data: list):
@@ -49,7 +49,7 @@ def draw(data: list):
     plt.rcParams['axes.unicode_minus'] = False
     plt.title('poly fit for %d centers' % len(data))
     fig, axs = plt.subplots(len(data), 1, sharex=True)
-    fig.subplots_adjust(hspace =0)
+    fig.subplots_adjust(hspace=0)
     for i in range(len(data)):
         if data[i] is None:
             continue
@@ -71,8 +71,9 @@ if __name__ == "__main__":
         resList = list()
         for group in calc.classList:
             core = calc.rawData[calc.coreList[calc.classList.index(group)]]
-            resList.append(fit(group,core))
-        fileName = os.path.join(OUTPUT_PATH, 'P01point%d.json' % calc.typeCount)
+            resList.append(fit(group, core))
+        fileName = os.path.join(
+            OUTPUT_PATH, 'P01point%d.json' % calc.typeCount)
         with open(fileName, 'w') as w:
             w.write(dumps(resList))
         print(fileName)

@@ -27,7 +27,7 @@ Z = np.sin(X**2)+np.sin(Y**2)
 fig, ax = plt.subplots()
 # CS = ax.contour(X, Y, Z ,5)
 # ax.clabel(CS, inline=True)
-ax.contourf(X, Y, Z, 1000, cmap=plt.cm.jet)
+ax.contourf(X, Y, Z, 100, cmap=plt.cm.jet)
 ax.set_title('hanyuu\' s demo')
 
 # plt.show()
