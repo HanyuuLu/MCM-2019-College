@@ -1,4 +1,10 @@
 class TimeWithOutDate:
+    ''' # time class without date
+    - Attributes:
+        seconds
+    - [hanyuu](https://hanyuufurude.github.io)
+    '''
+
     def __init__(self, **kwargs):
         self.seconds = 0
         if 'seconds' in kwargs:
@@ -26,3 +32,4 @@ if __name__ == '__main__':
     print(time.strTime())
     timea = TimeWithOutDate(seconds=8)
     print(timea.strTime())
+    print(help(TimeWithOutDate))

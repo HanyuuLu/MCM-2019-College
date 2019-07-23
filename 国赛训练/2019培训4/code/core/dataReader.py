@@ -14,6 +14,15 @@ def dataConverter(src: list)->list:
 
 
 def dataReader():
+    '''
+    # 从data1.xls中提取数据
+    0. 任务号码
+    1. 任务gps 纬度
+    2. 任务gps经度
+    3. 任务标价
+    4. 任务执行情况
+    '''
+
     fileName = None
     try:
         fileName = sys.argv[-1]
@@ -44,9 +53,20 @@ def dataReader():
 
 
 def dataReader2():
+    '''
+    # 从data2.xlsx中提取数据
+    0. 会员编号
+    1. 会员位置(GPS)
+        0. 纬度
+        1. 经度
+    2. 预订任务限额
+    3. 预订任务开始时间
+    4.信誉值
+    '''
+
     fileName = None
     try:
-        fileName = sys.argv[-1]
+        fileName = sys.argv[-2]
         print('[fileName]%s' % fileName)
     except Exception:
         print('no file name')
