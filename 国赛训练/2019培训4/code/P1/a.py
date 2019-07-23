@@ -32,7 +32,7 @@ def draw(data: list):
     plt.rcParams['axes.unicode_minus'] = False
     plt.title('poly fit for %d centers' % len(data))
     fig, axs = plt.subplots(len(data), 1, sharex=True)
-    fig.subplots_adjust(hspace =0)
+    fig.subplots_adjust(hspace=0)
     for i in range(len(data)):
         if data[i] is None:
             continue

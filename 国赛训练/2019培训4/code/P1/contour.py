@@ -1,5 +1,6 @@
 # countour.py
 # 等高线绘制
+from core import const
 import os
 import re
 import sys
@@ -9,15 +10,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 sys.path.append('.\\')
-from core import const
 
-def pri(x,y, points: dict):
+
+def pri(x, y, points: dict):
     minList = list()
     for i in points:
         if i is not None:
             dis = (i['E'] - x) ** 2 + (i['N'] - y) ** 2
             if len(minList) < 3:
-                minList.append([dis,i])
+                minList.append([dis, i])
                 continue
             if dis < max([x[0] for x in minList]):
                 minList.sort(key=lambda x: x[0])
@@ -25,9 +26,8 @@ def pri(x,y, points: dict):
                 minList.append([dis, i])
     pri = 0
     for i in minList:
-        pri += i[1]['price'] * i[0] / sum([x[0] for x in minList])
+        pri += i[1]['price'] / i[0] / sum([1 / x[0] for x in minList])
     return pri
-
 
 
 def draw(points: dict):
@@ -43,7 +43,7 @@ def draw(points: dict):
         delta
     )
     X, Y = np.meshgrid(x, y)
-    row  = list()
+    row = list()
     for j in y:
         line = list()
         for i in x:
@@ -51,10 +51,10 @@ def draw(points: dict):
         row.append(line)
     Z = np.array(row)
     fig, ax = plt.subplots()
-    CS = ax.contour(X, Y, Z ,20)
+    CS = ax.contour(X, Y, Z, 20)
     ax.clabel(CS, inline=True)
     ax.contourf(X, Y, Z, 100, cmap=plt.cm.jet)
-    ax.set_title('contour for %d centers'%len(points))
+    ax.set_title('contour for %d centers' % len(points))
 
     # plt.show()
     # plt.show()
@@ -78,7 +78,8 @@ if __name__ == '__main__':
                     for key, item in enumerate(rawData):
                         if item is not None:
                             rawData[key] = {
-                                'price': sum([x['no'] for x in item])/len([x['no']for x in item]),
+                                'price': sum([x['no'] for x in item]) /
+                                len([x['no']for x in item]),
                                 'E': item[0]['E'],
                                 'N': item[0]['N']
                             }
