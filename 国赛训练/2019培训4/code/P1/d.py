@@ -30,14 +30,14 @@ if __name__ == '__main__':
             collect.append(list())
         for key, config in enumerate(centerList):
             for i in rawData:
-                if (lambda i, config: ((i[1][0] - config[0]) ** 2 + (i[1][1] - config[1]) ** 2) ** 0.5)(i, config) < 5:
+                if (lambda i, config: ((i[1][0] - config[0]) ** 2 + (i[1][1] - config[1]) ** 2) ** 0.5)(i, config) < 3:
                     collect[key].append(i)
         res = list()
         for group in collect:
             res.append(dict())
-            res[-1]['num[pcs/km^2]'] = len(group) / (pi * 5 ** 2)
+            res[-1]['num[pcs/km^2]'] = len(group) / (pi * 3 ** 2)
             res[-1]['quota[pcs/km^2]'] = sum([x[2]
-                                              for x in group]) / (pi * 5 ** 2)
+                                              for x in group]) / (pi * 3 ** 2)
         fileName = os.path.join(OUTPUT_PATH, 'P01VIP%d.json' % len(collect))
         with open(fileName, 'w') as w:
             dump(res, w)

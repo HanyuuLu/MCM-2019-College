@@ -23,7 +23,7 @@ def fit(data: list, core: list):
     # for i in tmpList:
     #     tmpList[i] = tmpList[i][1] / sum(tmpList[i])
     # px
-    px = dict()
+    px = dict()git 
     for i in tmpList:
         px[i] = sum(tmpList[i])/sum([sum(tmpList[key]) for key in tmpList])
     # qx
