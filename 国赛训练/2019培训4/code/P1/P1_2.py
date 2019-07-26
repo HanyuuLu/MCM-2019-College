@@ -1,11 +1,13 @@
 # for issue 49
+import os
 import sys
+from json import dump
 from  copy import deepcopy
 sys.path.append('.\\')
 from math import e
 from core.dataReader import dataReader, dataReader2
 from core.longitudeAndLatitudeConverter import lalConverter
-
+from core.const import OUTPUT_PATH
 
 def distance(obj1: list, obj2: list):
     assert isinstance(obj1, list) or isinstance(obj1, tuple), \
@@ -55,7 +57,7 @@ class Calc:
         主序：时间非降序
         次序：信誉度降序
         '''
-        dbg = str()
+        res = list()
         self.memberList.sort(key=lambda x: (x.startTime, -x.reputation))
         avilableList = deepcopy(self.taskList)
         for member in self.memberList:
@@ -67,9 +69,24 @@ class Calc:
             while len(member.orderList) <= member.reputation and len(avilableList)>0 and avilableList[0].prop>0.05:
                 member.orderList.append(avilableList[0])
                 avilableList.remove(member.orderList[-1])
-            dbg += '%d\t%d\n' % (len(member.orderList), len(avilableList))
-            with open('debug.log','w+') as w:
-                w.write(dbg)
+            # 接受阈值
+            thresholds = 0.05
+            for order in member.orderList:
+                order.finished = order.prop - 1 / member.reputation > thresholds
+            res.append({
+                'no': member.no,
+                'reputation': member.reputation,
+                'position': member.position,
+                'start time': str(member.startTime),
+                'selected': len(member.orderList),
+                'finished': sum([x.finished for x in member.orderList]),
+                'remain':len(avilableList),
+                })
+        fileName = os.path.join(OUTPUT_PATH, 'issue49.json')
+        with open(fileName, 'w') as w:
+            dump(res,w)
+
+
 
 
     pass
@@ -109,6 +126,7 @@ class Member:
 
     def __init__(self, *args):
         args = args[0]
+        self.no =args[0]
         self.reputation = args[4]
         self.position = lalConverter(args[1])
         self.startTime = args[3]

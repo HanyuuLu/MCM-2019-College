@@ -29,6 +29,9 @@ class TimeWithOutDate:
     def __lt__(self, value):
         return self.seconds.__lt__(value.seconds)
 
+    def __getstate__(self):
+        return self.seconds
+
 
 if __name__ == '__main__':
     time = TimeWithOutDate(seconds=86398)
@@ -37,4 +40,4 @@ if __name__ == '__main__':
     print(timea.strTime())
     # print(help(TimeWithOutDate))
     print(time.__lt__(timea))
-    print(time<timea)
+    print(time < timea)
