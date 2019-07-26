@@ -1,8 +1,18 @@
 # for issue 49
 import sys
+from  copy import deepcopy
 sys.path.append('.\\')
+from math import e
 from core.dataReader import dataReader, dataReader2
 from core.longitudeAndLatitudeConverter import lalConverter
+
+
+def distance(obj1: list, obj2: list):
+    assert isinstance(obj1, list) or isinstance(obj1, tuple), \
+        '[ERROR] 第一个参数应当为list或者tuple,输入的参数类型为%s' % str(type(obj1))
+    assert isinstance(obj2, list) or isinstance(obj2, tuple), \
+        '[ERROR] 第二个参数应当为list或者tuple,输入的参数类型为%s' % str(type(obj2))
+    return ((obj1[0] - obj2[0]) ** 2 + (obj1[1] - obj2[1]) ** 2)**0.5
 
 
 class Calc:
@@ -41,8 +51,26 @@ class Calc:
         pass
 
     def calc(self):
+        '''
+        主序：时间非降序
+        次序：信誉度降序
+        '''
+        dbg = str()
         self.memberList.sort(key=lambda x: (x.startTime, -x.reputation))
-        pass
+        avilableList = deepcopy(self.taskList)
+        for member in self.memberList:
+            member.orderList = list()
+            for i in avilableList:
+                dis = distance(i.position, member.position)
+                i.prop = i.pricePremiumNormalize * i.weight['premium'] + e**-distance(i.position,member.position) * i.weight['distance']
+            avilableList.sort(key=lambda x: -x.prop)
+            while len(member.orderList) <= member.reputation and len(avilableList)>0 and avilableList[0].prop>0.05:
+                member.orderList.append(avilableList[0])
+                avilableList.remove(member.orderList[-1])
+            dbg += '%d\t%d\n' % (len(member.orderList), len(avilableList))
+            with open('debug.log','w+') as w:
+                w.write(dbg)
+
 
     pass
 
@@ -81,7 +109,7 @@ class Member:
 
     def __init__(self, *args):
         args = args[0]
-        self.reputition = args[4]
+        self.reputation = args[4]
         self.position = lalConverter(args[1])
         self.startTime = args[3]
 

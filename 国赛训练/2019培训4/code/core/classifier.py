@@ -5,16 +5,11 @@ from random import randint, random
 
 import matplotlib.pyplot as plt
 
-<<<<<<< HEAD:国赛训练/2019培训4/code/core/classifier.py
 # import core.const
 from core import const
 from core.configIO import configWrite, fetchConfigList
 from core.const import OUTPUT_PATH
 from core.dataReader import dataReader
-=======
-from dataReader import dataReader
-from configIO import *
->>>>>>> c02fe5ca58fe9a040a4907390ee2c87b8409c01f:国赛训练/2019培训4/code/classifier.py
 
 
 class Classifier:
@@ -158,13 +153,9 @@ class Classifier:
                 conn += 1
         # 还原最佳聚类现场以便后续画图
         self.coreList = resList
-<<<<<<< HEAD:国赛训练/2019培训4/code/core/classifier.py
         # 每个聚类的最优化数据（聚类个数，中心点数据被持久化保存）
         configWrite(self.typeCount, self.coreList)
         # 计算最优化数据的分数
-=======
-        configWrite(self.typeCount, self.coreList)
->>>>>>> c02fe5ca58fe9a040a4907390ee2c87b8409c01f:国赛训练/2019培训4/code/classifier.py
         self.calc()
         print('[info]\tdes finish with best score %f' % score)
         print(resList)
@@ -220,8 +211,8 @@ class Classifier:
 
 
 def dis(obj1: list, obj2: list):
-    assert isinstance(obj1, list), \
-        '[ERROR] 第一个参数应当为list,输入的参数类型为$s' % str(type(obj1))
-    assert isinstance(obj2, list), \
-        '[ERROR] 第二个参数应当为list,输入的参数类型为$s' % str(type(obj2))
+    assert isinstance(obj1, list) or isinstance(obj1,tuple), \
+        '[ERROR] 第一个参数应当为list或者tuple,输入的参数类型为%s' % str(type(obj1))
+    assert isinstance(obj2, list) or isinstance(obj2,tuple), \
+        '[ERROR] 第二个参数应当为list或者tuple,输入的参数类型为%s' % str(type(obj2))
     return sqrt((obj1[1] - obj2[1]) ** 2 + (obj1[2] - obj2[2]) ** 2)
