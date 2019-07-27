@@ -1,6 +1,7 @@
 # 输出路径
 OUTPUT_PATH = 'E:\\Repos\\Resource\\temp'
 OUTPUT_PATH = 'E:\\Repos\\Resource'
+OUTPUT_PATH = 'D:\\res'
 # 经度上限
 LONGITUDE_UPPER = 115
 # 经度下线

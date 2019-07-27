@@ -103,7 +103,7 @@ class Calc:
         for member in self.memberList:
             for order in member.orderList:
                 if order.finished:
-                    order.pricePremium = (FINISH_THRESHOLDS + member.reputation - member.weight['distance']*e**(-distance(member.position,order.position)))/member.weight.premium*mem.priceBaseju7m
+                    order.pricePremium = (FINISH_THRESHOLDS + member.reputation - order.weight['distance']*e**(-distance(member.position,order.position)))/order.weight['premium']*order.priceBase
 
 
 
