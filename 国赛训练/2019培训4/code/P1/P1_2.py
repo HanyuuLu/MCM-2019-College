@@ -1,6 +1,7 @@
 # for issue 49
 import os
 import sys
+import gc
 sys.path.append('.\\')
 from copy import deepcopy
 from json import dump
@@ -25,7 +26,7 @@ def distance(obj1: list, obj2: list):
 
 
 class Calc:
-    '''
+    r'''
     # 任务定价方案
 ## 会员
  - reputation:信誉度
@@ -92,24 +93,101 @@ class Calc:
                 'finished': sum([x.finished for x in member.orderList]),
                 'remain': len(avilableList),
             })
+        self.unlinkedTaskList = avilableList
         fileName = os.path.join(OUTPUT_PATH, 'issue49.json')
         with open(fileName, 'w') as w:
             dump(res, w)
         return finished
 
     def dev(self):
-        taskList = list()
+        ''' # issue 50
+- 根据Excel表中的原定价方案 计算出已完成任务的预期最低定价 从而计算出多出的资金 并且根据新的任务定价方案 得出现在会员的任务分配
+- 根据现有的任务分配方案计算出未完成任务的差价，对差价按照升序进行排序，并且设置差价门槛。按照差价的排序，给未完成任务提高定价。资金花完或者当前差价大于差价门槛时就结束，从而得出新的定价方案。 按照新的方案得出任务完成率以及完成（不考虑未完成）
+- 调整差价的门槛，计算满意程度（-0.6*当前成本/原方案成本+任务完成率），最优化使得满意程度最大
 
+        '''
+
+        self.calc()
+        origCost = 0
+        for task in self.taskList:
+            origCost += task.pricePremium + task.priceBase
+
+        gc.collect()
+        taskList = list()
+        self.restfulPrice = 0
         for member in self.memberList:
             for order in member.orderList:
                 if order.finished:
-                    order.pricePremium = (FINISH_THRESHOLDS + member.reputation - order.weight['distance']*e**(-distance(member.position,order.position)))/order.weight['premium']*order.priceBase
-
-
-
-
-
-
+                    toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
+                        member.position, order.position)))/order.weight['premium']*order.priceBase
+                    self.restfulPrice += order.pricePremium - toPrice
+                    order.pricePremium = toPrice
+            taskList.extend(member.orderList)
+        self.taskList = taskList
+        self.taskList.extend(self.unlinkedTaskList)
+        print('%0.2f$ saved' % self.restfulPrice)
+        gc.collect()
+        self.calc()
+        self.newTasklist = list()
+        self.newTasklist.extend(self.unlinkedTaskList)
+        for member in self.memberList:
+            for order in member.orderList:
+                if hasattr(order,'finished') and not order.finished:
+                    toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
+                        member.position, order.position)))/order.weight['premium']*order.priceBase
+                    order.priceDelta = - order.pricePremium + toPrice
+                    order.pricePremium = toPrice
+            self.newTasklist.extend(member.orderList)
+        self.sortByIssue50()
+        for task in self.taskList:
+            if not hasattr(task,'finished')  or task.finished or self.restfulPrice < task.priceDelta:
+                break
+            self.restfulPrice -= task.priceDelta
+            task.pricePremium += task.priceDelta
+        gc.collect()
+        self.calc()
+        '''
+        满意程度（-0.6*当前成本/原方案成本+任务完成率）
+        * 成本计算是所有任务（包括完成未完成和未挑选的任务）的标示价格
+        * 任务完成率是完成任务占总任务的比例
+        '''
+        cost = 0
+        finishedCount = 0
+        for task in self.taskList:
+            if hasattr(task,'finished') and task.finished:
+                finishedCount += 1
+            cost += task.pricePremium + task.priceBase
+        scoreCost = cost / origCost
+        scoreFinRate = finishedCount / len(self.taskList)
+        score = -0.6*scoreCost+scoreFinRate
+        print('cost\t%f' % scoreCost)
+        print('finishRate\t%f' % scoreFinRate)
+        print('score\t%f',score)
+    def sortByIssue50(self):
+        ''' # Issue中对任务排序
+        1. 未完成任务
+        2. 未挑选任务
+        3. 已完成任务
+        '''
+        self.taskList = list()
+        gc.collect()
+        # 未完成任务
+        for x in self.newTasklist[:]:
+            if hasattr(x, 'finished') and not x.finished:
+                self.taskList.append(x)
+                self.newTasklist.remove(x)
+        self.taskList.sort(key=lambda x: x.priceDelta)
+        # 未挑选任务
+        for x in self.newTasklist[:]:
+            if not hasattr(x, 'finished'):
+                self.taskList.append(x)
+                self.newTasklist.remove(x)
+        # 已完成任务
+        for x in self.newTasklist[:]:
+            self.taskList.append(x)
+            self.newTasklist.remove(x)
+        del(self.newTasklist)
+        gc.collect()
 
 
 class Task:
