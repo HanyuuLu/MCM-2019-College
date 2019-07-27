@@ -1,13 +1,20 @@
 # for issue 49
 import os
 import sys
-from json import dump
-from  copy import deepcopy
 sys.path.append('.\\')
+from copy import deepcopy
+from json import dump
 from math import e
+
+from core.const import OUTPUT_PATH
 from core.dataReader import dataReader, dataReader2
 from core.longitudeAndLatitudeConverter import lalConverter
-from core.const import OUTPUT_PATH
+
+# 挑选阈值
+SELECT_THRESHOLDS = 0.05
+# 接受阈值
+FINISH_THRESHOLDS = 0.06460243463516235
+
 
 def distance(obj1: list, obj2: list):
     assert isinstance(obj1, list) or isinstance(obj1, tuple), \
@@ -57,6 +64,7 @@ class Calc:
         主序：时间非降序
         次序：信誉度降序
         '''
+        finished = 0
         res = list()
         self.memberList.sort(key=lambda x: (x.startTime, -x.reputation))
         avilableList = deepcopy(self.taskList)
@@ -64,15 +72,17 @@ class Calc:
             member.orderList = list()
             for i in avilableList:
                 dis = distance(i.position, member.position)
-                i.prop = i.pricePremiumNormalize * i.weight['premium'] + e**-distance(i.position,member.position) * i.weight['distance']
+                i.prop = i.pricePremiumNormalize * \
+                    i.weight['premium'] + e**- \
+                    distance(i.position, member.position) * \
+                    i.weight['distance']
             avilableList.sort(key=lambda x: -x.prop)
-            while len(member.orderList) <= member.reputation and len(avilableList)>0 and avilableList[0].prop>0.05:
+            while len(member.orderList) <= member.reputation and len(avilableList) > 0 and avilableList[0].prop > SELECT_THRESHOLDS:
                 member.orderList.append(avilableList[0])
                 avilableList.remove(member.orderList[-1])
-            # 接受阈值
-            thresholds = 0.05
             for order in member.orderList:
-                order.finished = order.prop - 1 / member.reputation > thresholds
+                order.finished = order.prop - 1 / member.reputation > FINISH_THRESHOLDS
+            finished += sum([x.finished for x in member.orderList])
             res.append({
                 'no': member.no,
                 'reputation': member.reputation,
@@ -80,16 +90,26 @@ class Calc:
                 'start time': str(member.startTime),
                 'selected': len(member.orderList),
                 'finished': sum([x.finished for x in member.orderList]),
-                'remain':len(avilableList),
-                })
+                'remain': len(avilableList),
+            })
         fileName = os.path.join(OUTPUT_PATH, 'issue49.json')
         with open(fileName, 'w') as w:
-            dump(res,w)
+            dump(res, w)
+        return finished
+
+    def dev(self):
+        taskList = list()
+
+        for member in self.memberList:
+            for order in member.orderList:
+                if order.finished:
+                    order.pricePremium = (FINISH_THRESHOLDS + member.reputation - member.weight['distance']*e**(-distance(member.position,order.position)))/member.weight.premium*mem.priceBaseju7m
 
 
 
 
-    pass
+
+
 
 
 class Task:
@@ -126,7 +146,7 @@ class Member:
 
     def __init__(self, *args):
         args = args[0]
-        self.no =args[0]
+        self.no = args[0]
         self.reputation = args[4]
         self.position = lalConverter(args[1])
         self.startTime = args[3]
@@ -134,5 +154,20 @@ class Member:
 
 if __name__ == '__main__':
     calc = Calc()
-    calc.calc()
+    # l = 0
+    # r = 1
+    # key = 522
+    # while True:
+    #     FINISH_THRESHOLDS = (l + r) / 2
+    #     res = calc.calc()
+    #     print(FINISH_THRESHOLDS,'\t', res)
+    #     if res > key:
+    #         l = (l + r) / 2
+    #     elif res < key:
+    #         r = (l + r) / 2
+    #     else:
+    #         break
+    print(calc.calc())
+    calc.dev()
+
     pass
