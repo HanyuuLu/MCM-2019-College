@@ -88,7 +88,7 @@ class Calc:
                 member.orderList.append(avilableList[0])
                 avilableList.remove(avilableList[0])
             for order in member.orderList:
-                order.finished = order.prop - 1 / member.reputation > FINISH_THRESHOLDS
+                order.finished = order.prop - 1 / member.reputation - FINISH_THRESHOLDS > 0
             finished += sum([x.finished for x in member.orderList])
             res.append({
                 'no': member.no,
@@ -103,7 +103,22 @@ class Calc:
         fileName = os.path.join(OUTPUT_PATH, 'issue49.json')
         with open(fileName, 'w') as w:
             dump(res, w)
+        self.debug()
         return finished
+
+
+    def debug(self):
+        finished = 0
+        total = 0
+        for member in self.memberList:
+            for order in member.orderList:
+                total += 1
+                if order.finished:
+                    finished += 1
+        for order in self.unlinkedTaskList:
+            total += 1
+        print('%f/%f'%(finished,total))
+
 
     def dev(self):
         ''' # issue 50
@@ -114,23 +129,25 @@ class Calc:
         '''
 
         self.calc()
-        origCost = 0
+        self.origCost = 0
         for member in self.memberList:
             for order in member.orderList:
-                origCost += order.priceBase+order.pricePremium
+                self.origCost += order.priceBase + order.pricePremium
+        for order in self.unlinkedTaskList:
+            self.origCost += order.priceBase + order.pricePremium
+
         taskList = list()
         # 结余资金
+        # 扣除完成任务多余投入
         self.restfulPrice = 0
         for member in self.memberList:
             for order in member.orderList:
                 if order.finished:
-                    # toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
-                    #     member.position, order.position))) / order.weight['premium'] * order.priceBase
-                    toPrice = order.priceBase / order.weight['premium'] * (
+                    toPrice = round(order.priceBase / order.weight['premium'] * (
                         FINISH_THRESHOLDS + 1 / member.reputation - e ** (-distance(
                             member.position,order.position
                         ))*order.weight['distance']
-                    )
+                    ),2)
                     if toPrice < 0:
                         toPrice = 0
                     assert order.pricePremium >= toPrice
@@ -146,22 +163,34 @@ class Calc:
         self.calc()
         self.newTasklist = list()
         self.newTasklist.extend(self.unlinkedTaskList)
+        # 补贴未完成任务投入
         for member in self.memberList:
             for order in member.orderList:
                 if hasattr(order,'finished') and not order.finished:
-                    toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
-                        member.position, order.position))) / order.weight['premium'] * order.priceBase
+                    toPrice = round((FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
+                        member.position, order.position))) / order.weight['premium'] * order.priceBase,2)
                     assert toPrice>0
                     order.priceDelta = -order.pricePremium + toPrice
-                    assert order.priceDelta > 0
+                    assert order.priceDelta >= 0
                     order.pricePremium = toPrice
             self.newTasklist.extend(member.orderList)
         self.sortByIssue50()
+        flag = True
         for task in self.taskList:
-            if not hasattr(task,'finished')  or task.finished or self.restfulPrice < task.priceDelta or task.priceDelta>DELTA_THRESHOLDS:
-                break
-            self.restfulPrice -= task.priceDelta
-            task.pricePremium += task.priceDelta
+            if flag:
+                '''
+                当资金充足、下一个任务未完成且需要提升的价格低于提升意愿门槛时，提升任务的价格至预期预期完成线
+                '''
+                if not hasattr(task,'finished')  or task.finished or self.restfulPrice < task.priceDelta or task.priceDelta>DELTA_THRESHOLDS:
+                    flag = False
+                self.restfulPrice -= task.priceDelta
+                task.pricePremium += task.priceDelta
+            else:
+                '''
+                上述条件破裂后，将剩余任务溢价全部调整为0以降低成本
+                '''
+                self.restfulPrice+=task.pricePremium
+                task.pricePremium = 0
         gc.collect()
         self.calc()
         self.newTasklist = list()
@@ -180,7 +209,7 @@ class Calc:
             if hasattr(task,'finished') and task.finished:
                 finishedCount += 1
             cost += task.pricePremium + task.priceBase
-        scoreCost = cost / origCost
+        scoreCost = cost / self.origCost
         scoreFinRate = finishedCount / len(self.taskList)
         score = -0.6 * scoreCost + scoreFinRate * 0.4
         print('%f devoted to unfinished'%(self.origRestfulPrice-self.restfulPrice))
