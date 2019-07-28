@@ -15,6 +15,8 @@ from core.longitudeAndLatitudeConverter import lalConverter
 SELECT_THRESHOLDS = 0.05
 # 接受阈值
 FINISH_THRESHOLDS = 0.06460243463516235
+# 价差门槛
+DELTA_THRESHOLDS = 60
 
 
 def distance(obj1: list, obj2: list):
@@ -67,9 +69,13 @@ class Calc:
         '''
         finished = 0
         res = list()
+        # 会员按照上述顺序排队，依次预定任务
         self.memberList.sort(key=lambda x: (x.startTime, -x.reputation))
         avilableList = deepcopy(self.taskList)
+        del(self.taskList)
         for member in self.memberList:
+            if hasattr(member, 'orderList'):
+                del(member.orderList)
             member.orderList = list()
             for i in avilableList:
                 dis = distance(i.position, member.position)
@@ -78,9 +84,9 @@ class Calc:
                     distance(i.position, member.position) * \
                     i.weight['distance']
             avilableList.sort(key=lambda x: -x.prop)
-            while len(member.orderList) <= member.reputation and len(avilableList) > 0 and avilableList[0].prop > SELECT_THRESHOLDS:
+            while len(member.orderList) < member.maxOrder and len(avilableList) > 0 and avilableList[0].prop > SELECT_THRESHOLDS:
                 member.orderList.append(avilableList[0])
-                avilableList.remove(member.orderList[-1])
+                avilableList.remove(avilableList[0])
             for order in member.orderList:
                 order.finished = order.prop - 1 / member.reputation > FINISH_THRESHOLDS
             finished += sum([x.finished for x in member.orderList])
@@ -109,23 +115,33 @@ class Calc:
 
         self.calc()
         origCost = 0
-        for task in self.taskList:
-            origCost += task.pricePremium + task.priceBase
-
-        gc.collect()
+        for member in self.memberList:
+            for order in member.orderList:
+                origCost += order.priceBase+order.pricePremium
         taskList = list()
+        # 结余资金
         self.restfulPrice = 0
         for member in self.memberList:
             for order in member.orderList:
                 if order.finished:
-                    toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
-                        member.position, order.position)))/order.weight['premium']*order.priceBase
+                    # toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
+                    #     member.position, order.position))) / order.weight['premium'] * order.priceBase
+                    toPrice = order.priceBase / order.weight['premium'] * (
+                        FINISH_THRESHOLDS + 1 / member.reputation - e ** (-distance(
+                            member.position,order.position
+                        ))*order.weight['distance']
+                    )
+                    if toPrice < 0:
+                        toPrice = 0
+                    assert order.pricePremium >= toPrice
+                    # 抽钱补款
                     self.restfulPrice += order.pricePremium - toPrice
                     order.pricePremium = toPrice
             taskList.extend(member.orderList)
         self.taskList = taskList
         self.taskList.extend(self.unlinkedTaskList)
-        print('%0.2f$ saved' % self.restfulPrice)
+        print('$%f saved' % self.restfulPrice)
+        self.origRestfulPrice = self.restfulPrice
         gc.collect()
         self.calc()
         self.newTasklist = list()
@@ -134,18 +150,25 @@ class Calc:
             for order in member.orderList:
                 if hasattr(order,'finished') and not order.finished:
                     toPrice = (FINISH_THRESHOLDS + 1 / member.reputation - order.weight['distance']*e**(-distance(
-                        member.position, order.position)))/order.weight['premium']*order.priceBase
-                    order.priceDelta = - order.pricePremium + toPrice
+                        member.position, order.position))) / order.weight['premium'] * order.priceBase
+                    assert toPrice>0
+                    order.priceDelta = -order.pricePremium + toPrice
+                    assert order.priceDelta > 0
                     order.pricePremium = toPrice
             self.newTasklist.extend(member.orderList)
         self.sortByIssue50()
         for task in self.taskList:
-            if not hasattr(task,'finished')  or task.finished or self.restfulPrice < task.priceDelta:
+            if not hasattr(task,'finished')  or task.finished or self.restfulPrice < task.priceDelta or task.priceDelta>DELTA_THRESHOLDS:
                 break
             self.restfulPrice -= task.priceDelta
             task.pricePremium += task.priceDelta
         gc.collect()
         self.calc()
+        self.newTasklist = list()
+        self.newTasklist.extend(self.unlinkedTaskList)
+        for member in self.memberList:
+            self.newTasklist.extend(member.orderList)
+        self.sortByIssue50()
         '''
         满意程度（-0.6*当前成本/原方案成本+任务完成率）
         * 成本计算是所有任务（包括完成未完成和未挑选的任务）的标示价格
@@ -159,15 +182,20 @@ class Calc:
             cost += task.pricePremium + task.priceBase
         scoreCost = cost / origCost
         scoreFinRate = finishedCount / len(self.taskList)
-        score = -0.6*scoreCost+scoreFinRate
+        score = -0.6 * scoreCost + scoreFinRate * 0.4
+        print('%f devoted to unfinished'%(self.origRestfulPrice-self.restfulPrice))
+        print('%f$ left' % self.restfulPrice)
         print('cost\t%f' % scoreCost)
         print('finishRate\t%f' % scoreFinRate)
-        print('score\t%f',score)
+        print('score\t%f' % score)
+
+
     def sortByIssue50(self):
         ''' # Issue中对任务排序
         1. 未完成任务
         2. 未挑选任务
         3. 已完成任务
+        self.newTaskList -> self.taskList
         '''
         self.taskList = list()
         gc.collect()
@@ -220,6 +248,8 @@ class Member:
     ## 会员
  - reputation: 信誉度
  - position: 坐标
+ - startTime: 开始时间
+ - maxOrder: 最大限额
  '''
 
     def __init__(self, *args):
@@ -228,10 +258,12 @@ class Member:
         self.reputation = args[4]
         self.position = lalConverter(args[1])
         self.startTime = args[3]
+        self.maxOrder = args[2]
 
 
 if __name__ == '__main__':
     calc = Calc()
+    calc.dev()
     # l = 0
     # r = 1
     # key = 522
@@ -245,7 +277,5 @@ if __name__ == '__main__':
     #         r = (l + r) / 2
     #     else:
     #         break
-    print(calc.calc())
-    calc.dev()
 
     pass
