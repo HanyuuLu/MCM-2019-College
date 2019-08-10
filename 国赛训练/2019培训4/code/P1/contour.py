@@ -13,6 +13,10 @@ sys.path.append('.\\')
 
 
 def pri(x, y, points: dict):
+    '''
+    - x,y is the position of the mesh point
+    - points is a list of the nearest three data points
+    '''
     minList = list()
     for i in points:
         if i is not None:
@@ -56,8 +60,6 @@ def draw(points: dict):
     ax.contourf(X, Y, Z, 100, cmap=plt.cm.jet)
     ax.set_title('contour for %d centers' % len(points))
 
-    # plt.show()
-    # plt.show()
     fileName = os.path.join(
         const.OUTPUT_PATH, 'P01contour%d.jpg' % len(points))
     plt.savefig(fileName)
@@ -65,7 +67,6 @@ def draw(points: dict):
 
 if __name__ == '__main__':
     for folder, subFolder, fileNameList in os.walk(const.OUTPUT_PATH):
-        # 暂时只需要根目录下的文件
         if folder == const.OUTPUT_PATH:
             for fileName in fileNameList:
                 # 匹配坐标文件
