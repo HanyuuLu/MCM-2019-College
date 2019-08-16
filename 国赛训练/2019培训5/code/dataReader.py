@@ -1,6 +1,6 @@
 import xlrd
 import os
-DIR = r'.\code'
+DIR = '.\\'
 FILE_LIST = \
     [
         'data (1).xls',
@@ -35,8 +35,7 @@ def rawConverter_1(src: list):
     if src is not None and src[0].value is not None and isinstance(src[0].value, (int, float, str)):
         try:
             if float(src[0].value):
-                return [i.value for i in src]
-            return src
+                return [i.value for i in src][1:]
         except Exception:
             return None
     else:
