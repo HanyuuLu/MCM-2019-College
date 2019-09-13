@@ -15,7 +15,7 @@ for i in row.items():
     dic['航站楼'] = (i('li.column.w80')).text()
     dic['机型'] = (i('div.item.w5p p'))[-1].text.strip('\t')
     try:
-        dic['实际到达时间'] = "%s %s"%((i('div.item.w15p p'))[4].text,(
+        dic['实际到达时间'] = "%s %s" % ((i('div.item.w15p p'))[4].text, (
             i('div.item.w15p p'))[5].text)
     except Exception as e:
         dic['实际到达时间'] = ""
