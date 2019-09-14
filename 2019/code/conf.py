@@ -17,9 +17,10 @@ class Conf:
         - initDate 起始日期
         - departRate 出发乘客使用出租车比例
         - arriveRate 到达乘客使用出租车比例
+        - defaultWaitTime 推荐司机等待时间
         '''
         self.fareAvg = 100
-        self.lanes = 6
+        self.lanes = 2
         self.vLanes = 5
         self.patch = self.lanes*self.vLanes
         self.initialTaxi = 0
@@ -40,17 +41,21 @@ class Conf:
         self.taxiAvgPeople = 1.3
         self.planeRate = 0.8
         self.initDate = datetime.datetime.strptime("2019-09-12", "%Y-%m-%d")
-        self.departRate = 0.1
-        self.arriveRate = 0.1356
+        self.departRate = 0.1356
+        self.arriveRate = 0.1
         self.processTime = \
             {
                 "depart2choice": 5,
-                "waitPassenger": 2,
+                "waitPassenger": 1,
             }
         self.startDate = datetime.datetime(2019, 9, 12)
         self.endDate = datetime.datetime(2019, 9, 14)
         self.maxWaitTime = 1800
+        self.maxWaitingQueue = 300
         self.defaultWaitTime = 132
+        self.averageProfits = 50
+        self.averageCash = 110
+        self.toCity = 45
 
 
 if __name__ == '__main__':
