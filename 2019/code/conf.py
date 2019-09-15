@@ -56,6 +56,11 @@ class Conf:
         self.averageProfits = 50
         self.averageCash = 110
         self.toCity = 45
+        self.clipWindowDepartLeft = 90
+        self.clipWindowDepartRight = 120
+        self.clipWindowArriveLeft = -45
+        self.clipWindowArriveRight = -15
+        
 
 
 if __name__ == '__main__':

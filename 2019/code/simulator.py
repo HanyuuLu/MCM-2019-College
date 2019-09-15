@@ -4,6 +4,7 @@ import time
 from copy import deepcopy
 # import math
 import numpy as np
+from scipy.stats import norm
 
 import conf
 import dataloader
@@ -109,6 +110,10 @@ class Simulator:
         self.driverALLProfits = 0
         self.driverALLTimes = 0
 
+        self.keyClipWindowDepartLeft = 0
+        self.keyClipWindowDepartRight = 0
+        self.keyClipWindowArriveLeft = 0
+        self.keyClipWindowArriveRight = 0
         self.keyArriveTimeLine = 0
         self.keyDepartIimeLine = 0
         self.passengerQuery = list()
@@ -123,7 +128,8 @@ class Simulator:
                         (minuteStamp(self.conf.endDate) -
                          minuteStamp(self.conf.startDate)))*100
                 print("%s\n[%.2f%%]" % (self.keyTime, proc), end="\r")
-            self.update(self.driverDetermineKnown)
+            # self.update(self.driverDetermineKnown)
+            self.update(self.driverDetermine)
             res = dict()
             res['time'] = time.strftime(
                 "%Y-%m-%d %H:%M:%S", time.localtime(self.keyTime*60))
@@ -145,6 +151,32 @@ class Simulator:
             json.dump(self.log, w)
 
     def update(self, choiceFunction):
+        # 更新航班信息提示指针
+        while self.keyClipWindowArriveLeft < len(self.arriveData) and \
+            minuteStamp(
+            self.arriveData[self.keyClipWindowArriveLeft]
+                ['计划到达时间']) < self.keyTime +\
+                self.conf.clipWindowArriveLeft:
+            self.keyClipWindowArriveLeft += 1
+        while self.keyClipWindowArriveRight < len(self.arriveData) and \
+                minuteStamp(
+                    self.arriveData[self.keyClipWindowArriveRight]
+                    ['计划到达时间']) < self.keyTime + \
+                self.conf.clipWindowArriveRight:
+            self.keyClipWindowArriveRight += 1
+        while self.keyClipWindowDepartLeft < len(self.departData) and \
+                minuteStamp(
+                    self.departData[self.keyClipWindowDepartLeft]
+                    ['计划出发时间']) < self.keyTime + \
+                self.conf.clipWindowDepartLeft:
+            self.keyClipWindowDepartLeft += 1
+        while self.keyClipWindowDepartRight < len(self.departData) and \
+                minuteStamp(
+                    self.departData[self.keyClipWindowDepartRight]
+                    ['计划出发时间']) < self.keyTime + \
+                self.conf.clipWindowDepartRight:
+            self.keyClipWindowDepartRight += 1
+
         # 更新到达乘客信息
         while self.keyArriveTimeLine < len(self.arriveTimeLine) and \
                 self.arriveTimeLine[self.keyArriveTimeLine] <= self.keyTime:
@@ -233,7 +265,30 @@ class Simulator:
                                 break
 
     def driverDetermine(self) -> bool:
-        return True
+        arriveData, departData = self.clipData()
+        inCounter = 0
+        for i in arriveData:
+            inCounter +=\
+                mode2people(i['机型']) * self.conf.arriveRate / \
+                self.conf.taxiAvgPeople * norm.cdf(
+                    (self.keyTime-minuteStamp(i['计划到达时间']) -
+                     self.conf.arriveLMiu)/self.conf.arriveLSigma
+                )
+        outCounter = 0
+        for i in departData:
+            outCounter +=\
+                mode2people(i['机型']) * self.conf.departRate / \
+                self.conf.taxiAvgPeople
+        maxOutCounter = \
+            (
+                self.conf.clipWindowDepartRight - self.conf.clipWindowDepartLeft
+            ) / \
+            self.conf.processTime['waitPassenger'] * self.conf.patch
+        outCounter = max(outCounter, maxOutCounter)
+        if (inCounter - outCounter > len(self.carQuery)):
+            return True
+        else:
+            return True
 
     def driverDetermineKnown(self) -> bool:
         # 乘客已在队列中
@@ -257,6 +312,17 @@ class Simulator:
             return False
         else:
             return True
+
+    def clipData(self):
+        arriveData = self.arriveData[
+            self.keyClipWindowArriveLeft:
+            self.keyClipWindowArriveRight
+        ]
+        departData = self.departData[
+            self.keyClipWindowDepartLeft:
+            self.keyClipWindowDepartRight
+        ]
+        return arriveData, departData
 
 
 if __name__ == '__main__':
