@@ -128,8 +128,8 @@ class Simulator:
                         (minuteStamp(self.conf.endDate) -
                          minuteStamp(self.conf.startDate)))*100
                 print("%s\n[%.2f%%]" % (self.keyTime, proc), end="\r")
-            # self.update(self.driverDetermineKnown)
-            self.update(self.driverDetermine)
+            self.update(self.driverDetermineKnown)
+            # self.update(self.driverDetermine)
             res = dict()
             res['time'] = time.strftime(
                 "%Y-%m-%d %H:%M:%S", time.localtime(self.keyTime*60))

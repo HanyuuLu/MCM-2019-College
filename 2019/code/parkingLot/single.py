@@ -33,7 +33,8 @@ position =\
         [2, 0]
     ]
 locaiton = [0, 0]
-while keyTime < 60*60:
+while keyTime < 60 * 60:
+    print(prepareTime)
     for i in range(2):
         # 更新人员信息
         for j in range(n):
@@ -70,7 +71,7 @@ while keyTime < 60*60:
                     for j in range(n):
                         timeOnStop[i][j] += prepareTime[i][j]
                         prepared[i][j] = False
-                    print(prepareTime)
+                    # print(prepareTime)
                     state[i] = 3
                     time[i] = keyTime
                     safeLock[i] = False
@@ -83,8 +84,9 @@ while keyTime < 60*60:
                 counter += 4
                 continue
     keyTime += 1
-    print(keyTime)
+    # print(keyTime)
 res = dict()
+res['车道数'] = 2
 res['一小时过车计数'] = counter
 res['停滞时间'] = timeOnStop
 print(res)
